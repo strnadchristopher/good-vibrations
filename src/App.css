@@ -6,6 +6,10 @@
 
 #root {
   text-align: center;
+  min-width:100vw;
+  width:100vw;
+  min-height:100vh;
+  height:100vh;
 }
 
 * {
@@ -19,6 +23,7 @@
 
 body {
   background: #1D1F21;
+  min-width:100vw;
 }
 
 .Navbar {
@@ -42,10 +47,6 @@ body {
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
   transition: height 0.3s ease-in-out;
-}
-
-.Navbar.ShowSearchBar{
-  /* height:20vh; */
 }
 
 .NavbarLinkInactive{

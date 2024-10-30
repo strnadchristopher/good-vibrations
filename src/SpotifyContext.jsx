@@ -7,6 +7,8 @@ const SpotifyContext = createContext();
 const client_id = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
 const client_secret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
 
+let spotifyScriptLoaded = false;
+
 export const SpotifyProvider = ({ children }) => {
     const location = useLocation();
     const playerRef = useRef(null);
@@ -18,6 +20,10 @@ export const SpotifyProvider = ({ children }) => {
     const [playerConnected, setPlayerConnected] = useState(false);
     const [spotifyAccessToken, setSpotifyAccessToken] = useState(localStorage.getItem('spotify_access_token'));
     const [randomPlayerName, setRandomPlayerName] = useState('');
+    const backgroundImageRef = useRef({ src: 'hello' });
+    const [bgImageSrc, setBgImageSrc] = useState('');
+    const [currentlyPlayingBgImage, setCurrentlyPlayingBgImage] = useState('');
+    const [showFullScreenPlayer, setShowFullScreenPlayer] = useState(false);
 
     useEffect(() => {
         if (!spotifyAccessToken && location.pathname !== '/spotify' && location.pathname !== '/login') {
@@ -28,12 +34,15 @@ export const SpotifyProvider = ({ children }) => {
 
     useEffect(() => {
         if (playerRef.current) return; // Prevent re-creating the player
+        if (!spotifyScriptLoaded) {
+            const script = document.createElement("script");
+            script.src = "https://sdk.scdn.co/spotify-player.js";
+            script.async = true;
 
-        const script = document.createElement("script");
-        script.src = "https://sdk.scdn.co/spotify-player.js";
-        script.async = true;
+            document.body.appendChild(script);
+            spotifyScriptLoaded = true;
+        }
 
-        document.body.appendChild(script);
 
         window.onSpotifyWebPlaybackSDKReady = () => {
             let randomString = "";
@@ -67,6 +76,7 @@ export const SpotifyProvider = ({ children }) => {
                     setPaused(state.paused);
                     setTrackProgress(state.position);
                     setTrackDuration(state.duration);
+                    setCurrentlyPlayingBgImage(state.track_window.current_track.album.images[0].url);
                 }
             });
 
@@ -74,6 +84,12 @@ export const SpotifyProvider = ({ children }) => {
                 console.error('Failed to connect player:', error);
             });
         };
+
+        window.addEventListener('beforeunload', () => {
+            if (playerRef.current) {
+                playerRef.current.disconnect();
+            }
+        });
 
         return () => {
             if (playerRef.current) {
@@ -85,10 +101,16 @@ export const SpotifyProvider = ({ children }) => {
         };
     }, [spotifyAccessToken]);
 
+    const setBackgroundImage = (url) => {
+        if (backgroundImageRef.current) {
+            backgroundImageRef.current.src = url;
+        }
+        setBgImageSrc(url);
+    };
+
     const isAuthorized = () => {
         return spotifyAccessToken !== null;
     };
-
 
     const refreshSpotifyToken = async () => {
         const refreshToken = localStorage.getItem('spotify_refresh_token');
@@ -99,12 +121,12 @@ export const SpotifyProvider = ({ children }) => {
         const response = await fetch('https://accounts.spotify.com/api/token', {
             method: 'POST',
             headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Basic ' + btoa(`${client_id}:${client_secret}`)
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Basic ' + btoa(`${client_id}:${client_secret}`)
             },
             body: new URLSearchParams({
-            grant_type: 'refresh_token',
-            refresh_token: refreshToken
+                grant_type: 'refresh_token',
+                refresh_token: refreshToken
             })
         });
 
@@ -120,7 +142,6 @@ export const SpotifyProvider = ({ children }) => {
         localStorage.setItem('spotify_access_token', data.access_token);
         return data.access_token;
     };
-
 
     const apiCallWithTokenRefresh = async (apiCall) => {
         try {
@@ -150,6 +171,7 @@ export const SpotifyProvider = ({ children }) => {
         });
         if (response.ok) {
             const data = await response.json();
+            setBackgroundImage(data.images[0].url);
             return data;
         }
         else {
@@ -188,7 +210,7 @@ export const SpotifyProvider = ({ children }) => {
         });
         if (response.ok) {
             const data = await response.json();
-            console.log('Followed artists:', data.artists.items);
+            setBackgroundImage(data.artists.items[0].images[0].url);
             return data.artists.items;
         } else {
             const error = new Error('Failed to fetch followed artists');
@@ -197,9 +219,6 @@ export const SpotifyProvider = ({ children }) => {
         }
     };
 
-    // Web SDK Functions
-
-    // function to play a certain song, accepts an array and will pass the array,
     const playSong = async (token, songArray) => {
         const response = await fetch('https://api.spotify.com/v1/me/player/play', {
             method: 'PUT',
@@ -229,6 +248,8 @@ export const SpotifyProvider = ({ children }) => {
         });
         if (response.ok) {
             const data = await response.json();
+            setBackgroundImage(data.images[0].url);
+            console.log("Setting background to: ", data.images[0].url);
             return data;
         } else {
             const error = new Error('Failed to fetch artist');
@@ -297,6 +318,7 @@ export const SpotifyProvider = ({ children }) => {
         });
         if (response.ok) {
             const data = await response.json();
+            setBackgroundImage(data.images[0].url);
             return data;
         } else {
             const error = new Error('Failed to fetch album');
@@ -314,6 +336,7 @@ export const SpotifyProvider = ({ children }) => {
         });
         if (response.ok) {
             const data = await response.json();
+            setBackgroundImage(data.items[0].images[0].url);
             return data.items;
         } else {
             const error = new Error('Failed to fetch user playlists');
@@ -331,6 +354,7 @@ export const SpotifyProvider = ({ children }) => {
         });
         if (response.ok) {
             const data = await response.json();
+            setBackgroundImage(data.items[0].album.images[0].url);
             return data.items;
         } else {
             const error = new Error('Failed to fetch user albums');
@@ -348,6 +372,7 @@ export const SpotifyProvider = ({ children }) => {
         });
         if (response.ok) {
             const data = await response.json();
+            setBackgroundImage(data.images[0].url);
             return data;
         } else {
             const error = new Error('Failed to fetch playlist');
@@ -365,6 +390,9 @@ export const SpotifyProvider = ({ children }) => {
         });
         if (response.ok) {
             const data = await response.json();
+            console.log('Search results:', data);
+            setBackgroundImage(data.artists.items[0].images[0].url);
+            // setBackgroundImage(data.images[0].url);
             return data;
         } else {
             const error = new Error('Failed to search Spotify');
@@ -384,6 +412,9 @@ export const SpotifyProvider = ({ children }) => {
             playerConnected,
             spotifyAccessToken,
             randomPlayerName,
+            backgroundImage: backgroundImageRef.current,
+            bgImageSrc,
+            currentlyPlayingBgImage,
             setPaused,
             setTrackProgress,
             setTrackDuration,
@@ -402,7 +433,9 @@ export const SpotifyProvider = ({ children }) => {
             getUserTopItems,
             searchSpotify,
             isAuthorized,
-            playSong
+            playSong,
+            showFullScreenPlayer,
+            setShowFullScreenPlayer,
         }}>
             {children}
         </SpotifyContext.Provider>

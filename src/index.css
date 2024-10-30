@@ -19,6 +19,9 @@
   -moz-user-select: none;
   -ms-user-select: none;
   -o-user-select: none;
+
+  min-width:100vw;
+  min-height:100vh;
 }
 a {
   font-weight: 500;

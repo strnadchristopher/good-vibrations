@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import { useState, useEffect } from 'react'
 import './App.css'
-import { faMagnifyingGlass, faPlay, faPause, faForward, faBackward, faLeftLong, faHouse, faCaretUp } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faPlay, faPause, faForward, faBackward, faLeftLong, faHouse, faCaretUp, faCaretDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { SpotifyProvider } from './SpotifyContext';
 import { SpotifyHome, SpotifyPlaylistBrowser, PlaylistExplorer, SpotifyAlbumsBrowser, AlbumExplorer, SubscribedArtistsBrowser, ArtistExplorer, MusicSearch } from './music/Music';
@@ -25,14 +25,11 @@ console.log("Spotify Access Token: ", storage_access_token)
 console.log("Spotify Refresh Token: ", storage_refresh_token)
 
 
-
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const [search_box_text, set_search_box_text] = useState('');
-  const [spotify_access_token, set_spotify_access_token] = useState(storage_access_token);
   // eslint-disable-next-line no-unused-vars
-  const [spotify_refresh_token, set_spotify_refresh_token] = useState(storage_refresh_token);
   const [show_search_bar, set_show_search_bar] = useState(false);
 
 
@@ -82,18 +79,36 @@ function App() {
         search_box_text={search_box_text}
         handle_search_box_update={handle_search_box_update}
       />}
-
-      <WebPlayback spotify_access_token={spotify_access_token} />
+      <BackgroundImage />
+      <WebPlayback />
+      <FullScreenPlayer />
 
       <AnimatedRoutes
         navigate={navigate}
         set_search_box_text={set_search_box_text}
-        set_spotify_access_token={set_spotify_access_token}
-        spotify_access_token={spotify_access_token}
         handle_spotify_error={handle_spotify_error}
       />
     </SpotifyProvider>
   )
+}
+
+function BackgroundImage() {
+  const { currentlyPlayingBgImage, bgImageSrc } = useSpotify();
+  // When the backgroundImage.src changes, set the background image to the new image
+
+  return (
+    <div className="BackgroundImageContainer"
+      style={
+        {
+          backgroundImage: `url(${currentlyPlayingBgImage ? currentlyPlayingBgImage : (bgImageSrc ? bgImageSrc : '')})`
+        }
+      }
+
+    >
+      {/* <img className="BackgroundImage" src={bgImageSrc} alt="Background Image" /> */}
+      <div className="BackgroundImageOverlay"></div>
+    </div>
+  );
 }
 
 // Page for when the user has not logged into spotify
@@ -127,9 +142,9 @@ function WebPlayback() {
     playerConnected,
     setTrackProgress,
     setCurrentVolume,
-    randomPlayerName
+    randomPlayerName,
+    setShowFullScreenPlayer
   } = useSpotify();
-  const [expanded, setExpanded] = useState(false);
   useEffect(() => {
     const intervalId = setInterval(() => {
       if (!paused) {
@@ -141,7 +156,7 @@ function WebPlayback() {
   }, [paused, setTrackProgress]);
 
   return (
-    <div className={"WebPlaybackControls" + (playerConnected ? " PlayerConnected" : "") + (expanded ? " FullScreen" : "")}>
+    <div className={"WebPlaybackControls" + (playerConnected ? " PlayerConnected" : "")}>
       {currentTrack && <div className="WebPlaybackControlsBackgroundImageContainer">
         <img className="WebPlaybackControlsBackgroundImage" src={currentTrack ? currentTrack.album.images[0].url : ''} alt="Album Art" />
         <div className="WebPlaybackControlsBackgroundImageOverlay"></div>
@@ -186,7 +201,7 @@ function WebPlayback() {
         />
         <div
           onClick={() => {
-            setExpanded(!expanded);
+            setShowFullScreenPlayer(true);
           }}
           className="ExpandIconContainer">
           <FontAwesomeIcon className="ExpandIcon" icon={faCaretUp} />
@@ -194,6 +209,78 @@ function WebPlayback() {
       </div>}
     </div>
   );
+}
+
+function FullScreenPlayer() {
+  const {
+    player,
+    currentTrack,
+    paused,
+    trackProgress,
+    trackDuration,
+    currentVolume,
+    setCurrentVolume,
+    randomPlayerName,
+    currentlyPlayingBgImage,
+    showFullScreenPlayer,
+    setShowFullScreenPlayer
+  } = useSpotify();
+
+  return (
+    <div className={"FullScreenWebPlayer" + (showFullScreenPlayer ? " ShowFullScreenWebPlayer" : "")} style={{ backgroundImage: `url(${currentlyPlayingBgImage ? currentlyPlayingBgImage : (currentTrack ? currentTrack.album.images[0].url : '')})` }}>
+      <div className="FullScreenWebPlayerBGOverlay">
+      </div>
+      <div className="FullScreenWebPlayerCloseButtonContainer"
+      onClick={() => {
+        setShowFullScreenPlayer(false);
+      }}
+      >
+        <FontAwesomeIcon className="FullScreenWebPlayerCloseButton" icon={faCaretDown}
+        />
+      </div>
+      {currentTrack && <div className="FullScreenWebPlayerBackgroundImageContainer">
+        <img className={"FullScreenWebPlayerAlbumArt" + (!paused ? " PlayingAnimation" : "")} src={currentTrack ? currentTrack.album.images[0].url : ''} alt="Album Art" />
+      </div>}
+      <div className="FullScreenWebPlayerControls">
+        <div className="FullScreenWebPlayerSongInfo">
+          <div className="FullScreenWebPlayerSongInfoTrackDetails">
+            <span className="FullScreenWebPlayerPlaybackTrackName">{currentTrack ? currentTrack.name : 'No Track Playing, Device Name is ' + randomPlayerName}</span>
+            <br />
+            <span className="FullScreenWebPlayerPlaybackArtistName">{currentTrack ? currentTrack.artists[0].name : ''}</span>
+          </div>
+        </div>
+        {currentTrack && <input className="FullScreenWebPlayerProgressBar" type="range" min="0" max={trackDuration} value={trackProgress}
+          onChange={(e) => {
+            player.seek(e.target.value);
+          }}
+        />}
+        {currentTrack && <div className="FullScreenWebPlayerPlaybackControls">
+          <FontAwesomeIcon className="FullScreenWebPlayerPlaybackControlButton" icon={faBackward}
+            onClick={() => {
+              player.previousTrack();
+            }}
+          />
+          <FontAwesomeIcon className="FullScreenWebPlayerPlaybackControlButton" icon={paused ? faPlay : faPause} onClick={() => {
+            player.togglePlay();
+          }} />
+          <FontAwesomeIcon className="FullScreenWebPlayerPlaybackControlButton" icon={faForward}
+            onClick={() => {
+              player.nextTrack();
+            }}
+          />
+        </div>}
+        {currentTrack && <div className="FullScreenWebPlayerVolumeControls">
+          <input type="range" min="0" max="100" value={currentVolume}
+            onChange={(e) => {
+              let newVolume = e.target.value / 100;
+              player.setVolume(newVolume);
+              setCurrentVolume(e.target.value);
+            }}
+          />
+        </div>}
+      </div>
+    </div>
+  )
 }
 
 function Navbar(props) {

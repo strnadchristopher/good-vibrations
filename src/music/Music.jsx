@@ -54,9 +54,6 @@ export function SpotifyHome() {
     return (
         <div className="CollectionPage">
             {/* User Profile, similar to collection header in artist explore page */}
-            <div className="MusicPageBackground">
-                {user != null && <img src={backgroundImageRef.current} alt="User Background" />}
-            </div>
             <div className="CollectionContainer">
                 {user != null &&
                     <div className="CollectionHeader">
@@ -180,10 +177,6 @@ export function PlaylistExplorer() {
     return (
         <div className="CollectionPage">
             {playlist != null && <>
-
-                <div className="MusicPageBackground">
-                    <img src={backgroundImageRef.current} alt="Playlist Background" />
-                </div>
                 <h2 className="CollectionHeaderName">{playlist.name}</h2>
                 <div className="CollectionContainer">
                     <div className="CollectionExplorerHeader">
@@ -255,14 +248,11 @@ export function AlbumExplorer() {
     let { album_id } = useParams();
     const [album, setAlbum] = useState(null);
     const { apiCallWithTokenRefresh, getAlbum, playSong } = useSpotify();
-    const backgroundImageRef = useRef(null);
     useEffect(() => {
         apiCallWithTokenRefresh((token) => getAlbum(token, album_id))
             .then(data => {
                 console.log("Album: ", data);
                 setAlbum(data);
-                if (backgroundImageRef.current == null) return;
-                backgroundImageRef.current.style.backgroundImage = `url(${data.images[0].url})`;
             })
             .catch((error) => {
                 console.error("Error: ", error);
@@ -298,13 +288,12 @@ export function AlbumExplorer() {
     return (
         <div className="CollectionPage">
             {album != null && <>
-                <div className="MusicPageBackground">
-                    <img src={album.images[0].url} alt="Album Background" />
-                </div>
                 <h2 className="CollectionHeaderName">{album.name}</h2>
                 <div className="CollectionContainer">
                     <div className="CollectionExplorerHeader">
-                        <img className="CollectionArt" src={backgroundImageRef.current} alt="Album Art" />
+                        <img className="CollectionArt" src={
+                            album.images[0].url
+                        } alt="Album Art" />
                         <div className="CollectionHeaderInfo">
                             <h2>by {album.artists.map((artist) => artist.name).join(", ")}</h2>
                             <br />
@@ -384,17 +373,12 @@ export function ArtistExplorer() {
     const [related_artists, setRelatedArtists] = useState(null);
     const { apiCallWithTokenRefresh, getArtist, getArtistTopTracks, getArtistAlbums, getRelatedArtists } = useSpotify();
     const [spotifyError, setSpotifyError] = useState(null);
-    const backgroundImageRef = useRef(null);
 
     useEffect(() => {
         apiCallWithTokenRefresh((token) => getArtist(token, artist_id))
             .then(data => {
                 console.log("Artist: ", data);
                 setArtist(data);
-                if (backgroundImageRef.current == null){
-                    backgroundImageRef.current = data.images[0].url;
-                }
-
                 // Fetch artist's top tracks
                 apiCallWithTokenRefresh((token) => getArtistTopTracks(token, artist_id))
                     .then(tracks => {
@@ -433,8 +417,6 @@ export function ArtistExplorer() {
                 console.error("Error: ", error);
                 setSpotifyError(error);
             });
-
-
     }, [artist_id])
 
 
@@ -450,9 +432,6 @@ export function ArtistExplorer() {
                 </div>
             }
             {artist != null && <>
-                <div className="MusicPageBackground">
-                    <img src={backgroundImageRef.current} alt="Artist Background" />
-                </div>
                 {/* <h1 className="CollectionHeaderName">{artist.name}</h1> */}
                 <div className="CollectionContainer">
 
@@ -523,16 +502,11 @@ export function MusicSearch() {
     let { search_query } = useParams();
     const [search_results, setSearchResults] = useState(null);
     const { apiCallWithTokenRefresh, searchSpotify } = useSpotify();
-    const backgroundImageRef = useRef(null);
     useEffect(() => {
         apiCallWithTokenRefresh((token) => searchSpotify(token, search_query, "track,album,artist"))
             .then(data => {
                 console.log("Search Results: ", data);
                 setSearchResults(data);
-                if (backgroundImageRef.current) return;
-                if (data.albums.items.length > 0) {
-                    backgroundImageRef.current = data.albums.items[Math.floor(Math.random() * data.albums.items.length)].images[0].url;
-                }
             })
             .catch((error) => {
                 console.error("Error fetching search results: ", error);
@@ -543,10 +517,6 @@ export function MusicSearch() {
         <div className="SearchResults">
             {search_results != null &&
                 <>
-                    <div className="SpotifyCollectionBackgroundImage">
-                        {search_results.albums.items.length > 0 && <img src={backgroundImageRef.current} alt="Album Background" />}
-                    </div>
-                    <br />
                     <h2>Search Results for: {search_query}</h2>
                     <br />
                     <h1>Artists</h1>
@@ -866,12 +836,12 @@ function TrackItem({ track, album, show_art = true, show_artist = true, subscrib
     return (
         <div className="TrackItem">
             {show_art && albumData && <img className="TrackArt"
-            onClick={() => {
-                console.log("Navigating to: ", `/album/${albumData.id}`);
-                navigate(`/album/${albumData.id}`);
-            }}
-            
-            src={albumData.images[0].url} alt="Album Art" />}
+                onClick={() => {
+                    console.log("Navigating to: ", `/album/${albumData.id}`);
+                    navigate(`/album/${albumData.id}`);
+                }}
+
+                src={albumData.images[0].url} alt="Album Art" />}
 
             <p className="TrackName">{track.name}</p>
 
@@ -882,7 +852,7 @@ function TrackItem({ track, album, show_art = true, show_artist = true, subscrib
                     </NavLink>
                 </p>
             )}
-            
+
             <TrackItemPlayButton playTrack={playTrack} />
         </div>
     )
