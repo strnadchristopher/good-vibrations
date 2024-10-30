@@ -431,7 +431,6 @@ function SpotifyCallbackHandler({ set_spotify_access_token }) {
     // Get the access token from the code query parameter
     let code = new URLSearchParams(location.search).get('code')
     // Pass the code, grant_type as 'authorization_code, and pass the redirect_uri, which is http://localhost:6969/spotify
-    var callback_url = import.meta.env.MODE == 'production' ? 'https://music-demo.christopherstrnad.com' : 'http://localhost:8675/spotify';
     console.log("Code: ", code)
     fetch('https://accounts.spotify.com/api/token', {
       method: 'POST',
@@ -439,7 +438,7 @@ function SpotifyCallbackHandler({ set_spotify_access_token }) {
         'Content-Type': 'application/x-www-form-urlencoded',
         'Authorization': `Basic ${auth}`
       },
-      body: `grant_type=authorization_code&code=${code}&redirect_uri=${callback_url}`
+      body: `grant_type=authorization_code&code=${code}&redirect_uri=${import.meta.env.VITE_CALLBACK_URL}`
     }).then(res => res.json())
       .then(data => {
         console.log('Spotify Auth Response:', data)
