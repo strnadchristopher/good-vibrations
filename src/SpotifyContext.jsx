@@ -1,6 +1,6 @@
 // SpotifyContext.js
 import { createContext, useContext, useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const SpotifyContext = createContext();
 
@@ -11,6 +11,7 @@ let spotifyScriptLoaded = false;
 
 export const SpotifyProvider = ({ children }) => {
     const location = useLocation();
+    const navigate = useNavigate();
     const playerRef = useRef(null);
     const [currentTrack, setCurrentTrack] = useState(null);
     const [paused, setPaused] = useState(true);
@@ -28,9 +29,9 @@ export const SpotifyProvider = ({ children }) => {
     useEffect(() => {
         if (!spotifyAccessToken && location.pathname !== '/spotify' && location.pathname !== '/login') {
             // Redirect to Spotify login if no access token is found
-            window.location.href = `http://localhost:8675/login`;
+            navigate('/login')
         }
-    }, [location.pathname, spotifyAccessToken]);
+    }, [location.pathname, spotifyAccessToken, navigate]);
 
     useEffect(() => {
         if (playerRef.current) return; // Prevent re-creating the player
