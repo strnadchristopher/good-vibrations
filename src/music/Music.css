@@ -659,6 +659,8 @@
     padding: 5em;
     padding-bottom: 2em;
     width:100vw;
+    box-sizing: border-box;
+    width:auto;
 }
 
 .CollectionArt {
@@ -670,6 +672,7 @@
     /* Ensure the image retains its aspect ratio */
     /* Drop shadow */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width:100%;
 }
 
 .CollectionHeaderInfo {
@@ -957,6 +960,8 @@
         padding-bottom:13vh;
         padding-top:4vh;
         margin-top:4vh;
+        width:auto;
+        box-sizing: border-box;
     }
 
     .SpotifyCollectionItemTilt {
