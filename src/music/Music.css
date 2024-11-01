@@ -1,5 +1,6 @@
 .MusicPage {
     padding-top:4vh;
+    padding-bottom:10vh;
     display: block;
     padding-left: 5vh;
     padding-right: 5vh;
@@ -498,11 +499,11 @@
     margin: 2em;
     overflow: visible;
     cursor: pointer;
+    border-radius: 1em;
+    /* Drop shadow */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.SpotifyCollectionItem.Circle {
-    border-radius: 50%;  /* Ensure images are circular */
-}
 
 .SpotifyCollectionItemTilt.Large {
     width: 15em;
@@ -596,7 +597,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-bottom:2em;
 }
 
 .CollectionName.ShowName {
@@ -610,6 +610,10 @@
 
 /* Eveery other element slightly different background */
 
+.CollectionHeader{
+    width:20vw;
+}
+
 .CollectionHeaderName {
     font-size: 3em;
     margin-bottom: 1em;
@@ -622,7 +626,7 @@
 .CollectionPage {
     width: 100%;
     width: 100vw;
-    padding-bottom: 3vh;
+    padding-bottom: 10vh;
     padding-top:4vh;
     margin-top:4vh;
 }
@@ -645,17 +649,16 @@
     margin-bottom: auto;
     padding: 5em;
     padding-bottom: 2em;
+    width:100vw;
 }
 
 .CollectionArt {
-    border-radius: 15px;
+    border-radius: 1em;
     margin-bottom: 1em;
     max-width: 100%;
-    object-fit: cover;
+    max-height:100%;
+    object-fit: contain;
     /* Ensure the image retains its aspect ratio */
-    width: 100%;
-    height: auto;
-    max-width: 20vw;
     /* Drop shadow */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
@@ -696,6 +699,13 @@
     vertical-align: top;
     box-sizing: border-box;
     width: 100%;
+}
+
+.CollectionExplorerBody h2{
+    font-size:3em;
+    text-align:left;
+    padding-left:1em;
+    padding-top:1em;
 }
 
 
@@ -928,6 +938,10 @@
         margin-top:4vh;
     }
 
+    .CollectionHeader{
+        width:100%;
+    }
+
     .CollectionPage{
         padding-bottom:13vh;
         padding-top:4vh;
@@ -953,6 +967,10 @@
 
     .CollectionArt {
         max-width: 95vw;
+    }
+
+    .CollectionContainer{
+        flex-direction:column;
     }
 
     .CollectionExplorerHeader {

@@ -299,9 +299,8 @@ function Navbar(props) {
       />
       <div className={"NavbarBigLinks" + (props.show_search_bar ? " HideNavbarLinks" : "")}>
         {/* Add a className to each link that matches the current page, i.e. if we're on popular, give it the "NavbarLinkActive" class */}
-        {/* HAve navlink for playlists as well at /playlists */}
         <NavLink
-          className={props.location.pathname.includes("manage") ? "NavbarLinkActive" : "NavbarLinkInactive"}
+          className={props.location.pathname.includes("home") ? "NavbarLinkActive" : "NavbarLinkInactive"}
           to={
             `/home`
           }><FontAwesomeIcon icon={faHouse} />
@@ -316,9 +315,7 @@ function Navbar(props) {
         </NavLink>
         <NavLink
           className={props.location.pathname.includes("albums") ? "NavbarLinkActive" : "NavbarLinkInactive"}
-          to={
-            `/albums`
-          }>Albums
+          to={`/albums`}>Albums
         </NavLink>
         {/* Button to show saerch bar */}
         <span

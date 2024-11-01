@@ -6,10 +6,10 @@
 
 #root {
   text-align: center;
-  min-width:100vw;
-  width:100vw;
-  min-height:100vh;
-  height:100vh;
+  min-width: 100vw;
+  width: 100vw;
+  min-height: 100vh;
+  height: 100vh;
 }
 
 * {
@@ -23,7 +23,7 @@
 
 body {
   background: #1D1F21;
-  min-width:100vw;
+  min-width: 100vw;
 }
 
 .Navbar {
@@ -37,7 +37,7 @@ body {
   z-index: 10;
   left: 0;
   height: 4vh;
-  min-height:50px;
+  min-height: 50px;
   box-sizing: border-box;
   /* To comply with safari mobile browser's keyboard, ensure this element moves upward if the keyboard is present */
   top: env(safe-area-inset-top, 0);
@@ -49,13 +49,14 @@ body {
   transition: height 0.3s ease-in-out;
 }
 
-.NavbarLinkInactive{
-  width:100%;
+.NavbarLinkInactive {
+  width: 100%;
 }
 
-.NavbarLinkActive {
+.NavbarLinkActive, .NavbarLinkActive svg {
   color: #00FF00 !important;
 }
+
 
 .NavbarBigLinks {
   width: 100%;
@@ -77,14 +78,16 @@ body {
   transition: transform 0.3s ease-in-out;
 }
 
-.NavbarBigLinks.HideNavbarLinks, .NavbarSmallLinks.HideNavbarLinks{
-  transform:translateX(-100%);
+.NavbarBigLinks.HideNavbarLinks,
+.NavbarSmallLinks.HideNavbarLinks {
+  transform: translateX(-100%);
 }
 
 .NavbarSmallLinks button,
 .NavbarSmallLinks a,
 .NavbarBigLinks button,
-.NavbarBigLinks a, .NavbarSearchButton {
+.NavbarBigLinks a,
+.NavbarSearchButton {
   width: 100%;
   height: 100%;
   background: none;
@@ -99,17 +102,18 @@ body {
   align-items: center;
 }
 
-.Navbar a, .Navbar a {
+.Navbar a,
+.Navbar a {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.NavbarSearchButton{
-  cursor:pointer;
+.NavbarSearchButton {
+  cursor: pointer;
 }
 
-.NavbarSearchButton:hover{
+.NavbarSearchButton:hover {
   background: rgba(0, 0, 0, .5);
 }
 
@@ -133,48 +137,48 @@ body {
   transition: width 5s ease-in-out;
 }
 
-.SearchBarToggle{
-  position:absolute;
-  top:20vw;
-  left:0;
-  width:20vw;
-  height:10vw;
-  background:rgba(0, 0, 0, .5);
-  display:flex;
+.SearchBarToggle {
+  position: absolute;
+  top: 20vw;
+  left: 0;
+  width: 20vw;
+  height: 10vw;
+  background: rgba(0, 0, 0, .5);
+  display: flex;
   justify-content: center;
   align-items: center;
   backdrop-filter: blur(5px);
-  z-index:500;
-  border-bottom-right-radius:15px;
+  z-index: 500;
+  border-bottom-right-radius: 15px;
 }
 
-.SearchBarContainer{
-  width:100%;
-  height:100%;
-  display:flex;
+.SearchBarContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
   flex-direction: row;
-  position:absolute;
-  top:0;
-  overflow:hidden;
-  transition:transform 0.3s ease-in-out;
+  position: absolute;
+  top: 0;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out;
 }
 
-.SearchBarIcon{
-  width:100%;
+.SearchBarIcon {
+  width: 100%;
   flex: 1;
-  display:flex;
+  display: flex;
   justify-content: center;
   align-items: center;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 
-.SearchBarContainer.HideSearchBar{
-  transform:translateX(100%);
+.SearchBarContainer.HideSearchBar {
+  transform: translateX(100%);
 }
 
-.SearchBarContainer.ShowSearchBar{
-  transform:translateX(0);
+.SearchBarContainer.ShowSearchBar {
+  transform: translateX(0);
 }
 
 
@@ -193,19 +197,19 @@ body {
   left: 0;
   height: 100%;
   box-sizing: border-box;
-  border: 2px solid rgba(0,0,0,0);
+  border: 2px solid rgba(0, 0, 0, 0);
   transition: height 0.3s ease-in-out, font-size 0.3s ease-in-out, bottom .2s ease-in-out, border 0.3s ease-in-out;
   /* To comply with safari mobile browser's keyboard, ensure this element moves upward if the keyboard is present */
   /* Give a nice box shadow above so it looks like its floating */
-  background:none;
+  background: none;
   /* background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   -webkit-transform: translate3d(0, 0, 0); */
   transform: translate3d(0, 0, 0);
-  padding-left:0;
-  padding-right:1em;
-  top:0;
+  padding-left: 0;
+  padding-right: 1em;
+  top: 0;
 }
 
 
@@ -217,22 +221,22 @@ body {
 
 }
 
-.SearchBarControls{
-  display:flex;
+.SearchBarControls {
+  display: flex;
   justify-content: center;
   align-items: center;
-  height:100%;
-  width:100%;
-  height:100%;
+  height: 100%;
+  width: 100%;
+  height: 100%;
   flex-direction: row;
-  z-index:50;
-  border-top:1px solid rgba(255, 255, 255, .5);
+  z-index: 50;
+  border-top: 1px solid rgba(255, 255, 255, .5);
 }
 
-.SearchBarButton{
-  width:100%;
-  height:100%;
-  display:flex;
+.SearchBarButton {
+  width: 100%;
+  height: 100%;
+  display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
@@ -240,12 +244,12 @@ body {
   transition: background 0.3s ease-in-out;
 }
 
-.SearchBarButton:hover{
-  background:rgba(0, 0, 0, .5);
+.SearchBarButton:hover {
+  background: rgba(0, 0, 0, .5);
 }
 
-.HideSearchBarButton{
-  border-right:none;
+.HideSearchBarButton {
+  border-right: none;
 }
 
 .SearchErrorText {
@@ -259,6 +263,7 @@ body {
 }
 
 .SearchResults {
+  padding-top: 5vh;
   padding-bottom: 15vh;
   text-align: center;
   user-select: none;
@@ -270,26 +275,31 @@ body {
   position: relative;
 }
 
-.SearchResultsBackgroundImage{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
+.SearchResults h2{
+  margin-top: 1em;
+  font-size: 2em;
+}
+
+.SearchResultsBackgroundImage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   /* Backgorund sizing */
   background-size: cover;
   background-position: center;
   z-index: -10;
-  transition:background-image 0.3s ease-in-out;
+  transition: background-image 0.3s ease-in-out;
   /* Give it a blur */
 }
 
-.SearchResultsBackgroundImageOverlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
+.SearchResultsBackgroundImageOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: -9;
   backdrop-filter: blur(15px);
 }
@@ -300,7 +310,7 @@ body {
   text-transform: capitalize;
 }
 
-.MovieCardTilt{
+.MovieCardTilt {
   display: inline-block;
   width: 30vw;
   min-width: 175px;
@@ -309,7 +319,7 @@ body {
 }
 
 .MovieCard {
-  width:100%;
+  width: 100%;
   position: relative;
   background-position: center;
   background-size: cover;
@@ -414,8 +424,8 @@ body {
   filter: invert(1);
 }
 
-.MovieCardVoteAverage{
-  font-size:1.1em;
+.MovieCardVoteAverage {
+  font-size: 1.1em;
 }
 
 .MovieTitle {
@@ -459,7 +469,7 @@ body {
 
 .MovieDetailsModal {
   background: #27292C;
-  background:none;
+  background: none;
   /* backdrop-filter: blur(5px); */
   text-align: left;
   /* Give it a box shadow */
@@ -474,30 +484,30 @@ body {
   border-radius: 15px;
 }
 
-.Italics{
+.Italics {
   color: rgba(255, 255, 255, .5);
 }
 
-.MovieDetailsModalBackground{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  display:inline-block;
+.MovieDetailsModalBackground {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: inline-block;
   z-index: -1;
-  background-size:cover;
-  background-position:center;
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
 }
 
-.MovieDetailsModalBackgroundOverlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  display:inline-block;
+.MovieDetailsModalBackgroundOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: inline-block;
   backdrop-filter: blur(15px);
 }
 
@@ -510,18 +520,18 @@ body {
   overflow: hidden;
 }
 
-.MovieDetailsModalHeaderContainer{
+.MovieDetailsModalHeaderContainer {
   -webkit-backdrop-filter: blur(80px);
   backdrop-filter: blur(80px);
   -webkit-mask-image: linear-gradient(to bottom, transparent, black);
   mask-image: linear-gradient(to bottom, transparent, black);
-  display:inline-block;
-  width:100%;
-  height:25%;
-  position:absolute;
-  bottom:0;
-  left:0;
-  z-index:10;
+  display: inline-block;
+  width: 100%;
+  height: 25%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 10;
 }
 
 .MovieDetailsModalHeaderTitle {
@@ -545,7 +555,7 @@ body {
   background-size: cover;
   background-position: center;
   border-radius: 15px 15px 0 0;
-  overflow:hidden;
+  overflow: hidden;
   position: absolute;
   top: 0%;
   left: 0;
@@ -585,8 +595,8 @@ body {
   font-size: .9em;
   overscroll-behavior-y: contain;
   background: none;
-  background:rgba(0, 0, 0, .5);
-  padding-bottom:15vh;
+  background: rgba(0, 0, 0, .5);
+  padding-bottom: 15vh;
 }
 
 .MovieDetailsModalBody .MovieCardTilt {
@@ -596,8 +606,8 @@ body {
 .MovieDetailsModalDownloadContainer {
   margin-top: 2%;
   margin-bottom: 2%;
-  padding-left:1em;
-  padding-right:1em;
+  padding-left: 1em;
+  padding-right: 1em;
 }
 
 
@@ -609,43 +619,43 @@ body {
   margin-bottom: 2%;
 }
 
-.DownloadButton{
-  background:rgba(0, 0, 0, .5);
+.DownloadButton {
+  background: rgba(0, 0, 0, .5);
 }
 
-.TorrentSearchHeader{
-  display:flex;
+.TorrentSearchHeader {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  width:100%;
-  margin-top:1em;
-  margin-bottom:1em;
+  width: 100%;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
-.TorrentSearchInput{
+.TorrentSearchInput {
   background: none;
-  border:none;
+  border: none;
   border-bottom: 1px solid white;
-  height:100%;
-  padding:6px;
-  padding-left:0;
+  height: 100%;
+  padding: 6px;
+  padding-left: 0;
   font-size: 1em;
-  width:25%;
-  display:inline-block;
+  width: 25%;
+  display: inline-block;
   border: 1px solid rgba(255, 255, 255, .5);
-  border-radius:15px;
-  padding-left:1em;
+  border-radius: 15px;
+  padding-left: 1em;
   transition: border 0.3s ease-in-out, width 0.3s ease-in-out;
 }
 
-.TorrentSearchInput::placeholder{
-  color:grey;
+.TorrentSearchInput::placeholder {
+  color: grey;
 }
 
 .TorrentSearchInput:active,
-.TorrentSearchInput:focus{
-  outline:none;
-  width:50%;
+.TorrentSearchInput:focus {
+  outline: none;
+  width: 50%;
   border: 1px solid white;
 }
 
@@ -657,25 +667,25 @@ body {
   /* Ensure this is not larger than the parent container */
   overflow-x: hidden;
   overflow-y: overlay;
-  margin-top:2%;
+  margin-top: 2%;
 }
 
-.TorrentsFoundCount{
+.TorrentsFoundCount {
   text-decoration: underline;
-  margin-left:.5em;
+  margin-left: .5em;
 }
 
-.SortMethodButtons{
-  width:100%;
-  display:flex;
+.SortMethodButtons {
+  width: 100%;
+  display: flex;
   justify-content: space-evenly;
   align-items: space-evenly;
 }
 
 .TorrentItem {
   padding: 1em;
-  margin-bottom:1vh;
-  border-radius:15px;
+  margin-bottom: 1vh;
+  border-radius: 15px;
   cursor: pointer;
   font-size: 1em;
   height: auto;
@@ -690,7 +700,7 @@ body {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
   animation: TorrentItemSlideIn 0.5s ease-in-out;
   position: relative;
-  background:rgba(0, 0, 0, .25);
+  background: rgba(0, 0, 0, .25);
 }
 
 
@@ -701,29 +711,29 @@ body {
 }
 
 
-.TorrentItemSelected{
+.TorrentItemSelected {
   background: rgba(0, 0, 0, .5);
 }
 
-.TorrentSearchMessage{
-  float:right;
+.TorrentSearchMessage {
+  float: right;
 }
 
-.DownloadSelectedButton{
-  margin-bottom:1em;
+.DownloadSelectedButton {
+  margin-bottom: 1em;
 }
 
-hr{
+hr {
   width: 100%;
   text-align: center;
-  margin:auto;
+  margin: auto;
   /* Hr design is slightly transparent */
   border: 1px solid rgba(72, 72, 72, 0.75);
   border: 1px solid rgba(255, 255, 255, .5);
 }
 
-.SimilarMoviesText{
-  margin-top:1em;
+.SimilarMoviesText {
+  margin-top: 1em;
 }
 
 @keyframes TorrentItemSlideIn {
@@ -738,14 +748,14 @@ hr{
   }
 }
 
-.TorrentItemPreviouslyDownloaded{
+.TorrentItemPreviouslyDownloaded {
   /* Give it a nice slightly transparent background different than a normal torrent item to show its been downloaded before */
   background: rgba(255, 255, 255, 0.9);
-  color:black;
+  color: black;
 }
 
-.TorrentItemPreviouslyDownloaded span{
-  color:black !important;
+.TorrentItemPreviouslyDownloaded span {
+  color: black !important;
   font-weight: 450;
 }
 
@@ -796,44 +806,42 @@ hr{
   transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
-.GenreItem h1{
+.GenreItem h1 {
   text-transform: capitalize;
 }
 
 /* Keyword search stuff */
 
-.KeywordSearchAreaTextBox{
-  width:50%;
-  height:100%;
-  background:none;
-  border:none;
-  color:white;
-  font-size:1.5em;
+.KeywordSearchAreaTextBox {
+  width: 50%;
+  height: 100%;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5em;
   text-align: center;
-  margin:auto;
-  margin-top:4%;
-  margin-bottom:4%;
+  margin: auto;
+  margin-top: 4%;
+  margin-bottom: 4%;
   border-bottom: 1px solid white;
-  display:block;
+  display: block;
 }
 
 /* When active, remove placeholder */
 
 .KeywordSearchAreaTextBox:active,
-.KeywordSearchAreaTextBox:focus{
-  outline:none;
+.KeywordSearchAreaTextBox:focus {
+  outline: none;
 }
 
-.KeywordSearchAreaTextBox::placeholder{
-}
 
-.KeywordSearchAreaTextBox::placeholder{
+.KeywordSearchAreaTextBox::placeholder {
   transition: opacity 0.2s ease-in-out;
 }
 
 .KeywordSearchAreaTextBox:active::placeholder,
-.KeywordSearchAreaTextBox:focus::placeholder{
-  opacity:0;
+.KeywordSearchAreaTextBox:focus::placeholder {
+  opacity: 0;
 }
 
 
@@ -866,7 +874,7 @@ hr{
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   /* This is a floating modal, i need its insides to scroll if it overflows */
   overflow-y: auto;
-  padding-bottom:12vh;
+  padding-bottom: 12vh;
 }
 
 .TorrentQueueModalCurrentlyDownloading {
@@ -934,13 +942,14 @@ hr{
   width: 25%;
   height: 100%;
   min-height: 50px;
-  background:rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(5px);
-  border:none;
+  border: none;
 }
 
 /* If we're in landscape, make the moviedetailsmodal max width more like 50% */
 @media (orientation: landscape) {
+
   .MovieDetailsModal {
     width: 60%;
     margin: auto;
@@ -949,7 +958,7 @@ hr{
     border-radius: 15px;
     min-width: 50%;
     min-width: 400px;
-    min-width:80vw;
+    min-width: 80vw;
     border-radius: 0;
   }
 
@@ -962,8 +971,8 @@ hr{
     background: rgba(0, 0, 0, .5);
   }
 
-  .TorrentItem:hover span{
-    color:white;
+  .TorrentItem:hover span {
+    color: white;
   }
 
   .MovieDetailsModalHeader {
@@ -977,10 +986,11 @@ hr{
     height: 75vh;
   }
 
-  .MovieCardTilt{
-    width:20vw;
+  .MovieCardTilt {
+    width: 20vw;
   }
-  .MovieCard{
+
+  .MovieCard {
     width: 100%;
   }
 
@@ -1011,23 +1021,23 @@ hr{
     pointer-events: all;
     transform: translateY(0);
   }
+
   .SearchResults {
     padding-top: 10vh;
-    padding-bottom:2vh;
-  }
-  .Navbar{
-    top:0;
-    bottom:auto;
+    padding-bottom: 2vh;
   }
 
-  .Navbar.ShowSearchBar{
-    /* height:12vh; */
+  .Navbar {
+    top: 0;
+    bottom: auto;
   }
 
-  .Navbar a:hover,.NavbarSearchButton button:hover {
+  .Navbar a:hover,
+  .NavbarSearchButton button:hover {
     background: rgba(0, 0, 0, 0.7);
     color: white;
   }
+
   .Navbar button:active,
   .Navbar button:focus,
   .Navbar button:hover,
@@ -1039,7 +1049,7 @@ hr{
 
   .TorrentQueueModal {
     border-radius: 15px;
-    padding-top:12vh;
+    padding-top: 12vh;
   }
 
   /* If Navbar is hovered, reveal navbar small links, which otherwise should be hidden */
@@ -1071,18 +1081,4 @@ hr{
     padding-left: 2%;
 
   }
-}
-
-/* Add media query for larger than an iphone, like a vertical monitor */
-@media (min-width: 500px) {
-  /* .MovieCard {
-    width: 20vw;
-    min-width: 200px;
-    max-width: 780px;
-  } */
-
-  .TorrentQueueItem {
-    font-size: 2em;
-  }
-
 }

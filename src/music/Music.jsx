@@ -583,7 +583,7 @@ function PlaylistItem({ playlist }) {
 
 }
 
-function ArtistItem({ artist, subscribed_artists_data, size = 200 }) {
+function ArtistItem({ artist, subscribed_artists_data, size = 300 }) {
     const navigate = useNavigate();
     const [download_progress, setDownloadProgress] = useState(null);
     const [animation_progress, setAnimationProgress] = useState(0);
@@ -625,7 +625,8 @@ function ArtistItem({ artist, subscribed_artists_data, size = 200 }) {
             style={{
                 width: `${size}px`,          // Dynamically set the width
                 height: `${size}px`,         // Dynamically set the height
-                borderRadius: '50%',         // Ensure it's circular
+                borderRadius: '1em',         // Ensure it's circular
+                overflow: 'hidden',
             }}
         >
             {download_progress !== null && (
@@ -670,7 +671,6 @@ function ArtistItem({ artist, subscribed_artists_data, size = 200 }) {
                 style={{
                     width: '100%',            // Fill the parent element
                     height: '100%',           // Fill the parent element
-                    borderRadius: '50%',      // Make sure the image stays circular
                     backgroundImage: artist.images?.length > 0 ? `url(${artist.images[0].url})` : `url(${musicIcon})`,
                     backgroundSize: artist.images?.length > 0 ? 'cover' : 'contain',
                 }}
@@ -732,9 +732,10 @@ function AlbumItem({ album, show_name = true, subscribed_artists_data = null, si
             style={{
                 width: `${size}px`,          // Dynamically set the width
                 height: `${size}px`,         // Dynamically set the height
-                borderRadius: '50%',         // Ensure it's circular
+                borderRadius: '1em',         // Ensure it's circular
                 backgroundImage: `url(${album.images[0].url})`,
                 backgroundSize: 'cover',
+                overflow: 'hidden',
             }}
         >
             {/* Progress circle, animating when progress exists */}
@@ -776,11 +777,10 @@ function AlbumItem({ album, show_name = true, subscribed_artists_data = null, si
                 </svg>
             )}
             <div
-                className="SpotifyCollectionItem Circle"
+                className="SpotifyCollectionItem"
                 style={{
                     width: '100%',            // Fill the parent element
                     height: '100%',           // Fill the parent element
-                    borderRadius: '50%',      // Ensure circular image
                 }}
                 onClick={() => {
                     console.log("Navigating to: ", `/album/${album.id}`);
