@@ -949,7 +949,6 @@ hr {
 
 /* If we're in landscape, make the moviedetailsmodal max width more like 50% */
 @media (orientation: landscape) {
-
   .MovieDetailsModal {
     width: 60%;
     margin: auto;

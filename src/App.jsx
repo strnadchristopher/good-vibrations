@@ -307,7 +307,7 @@ function Navbar(props) {
         </NavLink>
         <NavLink
           className={props.location.pathname.includes("artists") ? "NavbarLinkActive" : "NavbarLinkInactive"}
-          to={`/artists`}>Your Artists
+          to={`/artists`}>Artists
         </NavLink>
         <NavLink
           className={props.location.pathname.includes("playlists") ? "NavbarLinkActive" : "NavbarLinkInactive"}

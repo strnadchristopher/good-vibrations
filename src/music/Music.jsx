@@ -735,6 +735,8 @@ function AlbumItem({ album, show_name = true, subscribed_artists_data = null, si
                 borderRadius: '1em',         // Ensure it's circular
                 backgroundImage: `url(${album.images[0].url})`,
                 backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
                 overflow: 'hidden',
             }}
         >
