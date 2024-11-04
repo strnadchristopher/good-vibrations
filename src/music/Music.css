@@ -1,90 +1,93 @@
 .MusicPage {
-    padding-top:4vh;
-    padding-bottom:10vh;
+    padding-top: 4vh;
+    padding-bottom: 10vh;
     display: block;
     padding-left: 5vh;
     padding-right: 5vh;
     width: 100%;
+    min-height:100vh;
+    height:auto;
 }
 
-.BackgroundImageContainer{
-    width:100%;
-    height:100%;
-    position:fixed;
-    top:0;
-    left:0;
-    z-index:-1;
-    display:inline-block;
+.BackgroundImageContainer {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    display: inline-block;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     transition: background 0.5s ease-in-out;
 }
 
-.BackgroundImageOverlay{
-    width:100vw;
-    height:100vh;
-    position:fixed;
-    background:rgba(0,0,0,0.25);
+.BackgroundImageOverlay {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    background: rgba(0, 0, 0, 0.25);
     z-index: 0;
     backdrop-filter: blur(15px);
 }
 
-.WebPlaybackControls{
+.WebPlaybackControls {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     margin-top: 1em;
-    position:fixed;
-    bottom:0;
-    left:0;
-    width:100vw;
-    background:rgba(0,0,0,0.5);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(50px);
-    z-index:10;
-    height:8vh;
+    z-index: 10;
+    height: 8vh;
     /* Ensure children are not larger than this container */
-    max-width:100%;
-    transform:translateY(100%);
+    max-width: 100%;
+    transform: translateY(100%);
     transition: transform 0.5s ease-in-out, height 0.5s ease-in-out;
     margin-bottom: env(safe-area-inset-bottom, 0);
 }
 
-.WebPlaybackControls.PlayerConnected{
-    transform:translateY(0);
+.WebPlaybackControls.PlayerConnected {
+    transform: translateY(0);
 }
 
-.WebPlaybackControlsBackgroundImageContainer{
-    position:absolute;
-    top:0;
-    width:100%;
-    z-index:-1;
+.WebPlaybackControlsBackgroundImageContainer {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: -1;
 }
 
-.WebPlaybackControlsBackgroundImageOverlay{
-    position:absolute;
-    top:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.1);
-    z-index:10;
+.WebPlaybackControlsBackgroundImageOverlay {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 10;
 }
 
-.WebPlaybackControlsBackgroundImage{
-    width:100%;
-    filter:blur(15px);
-    object-fit:cover;
-    object-position:center;
+.WebPlaybackControlsBackgroundImage {
+    width: 100%;
+    filter: blur(15px);
+    object-fit: cover;
+    object-position: center;
 }
 
-.WebPlaybackControlsProgressBar{
-    position:absolute;
-    top:0;
-    width:100%;
-    z-index:15;
+.WebPlaybackControlsProgressBar {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 15;
     /* This is a range item to display the track progress, make it fit with our design language */
     -webkit-appearance: none;
+    appearance: none;
     width: 100%;
     height: 5px;
     border-radius: 5px;
@@ -93,11 +96,11 @@
     opacity: 0.7;
     -webkit-transition: .2s;
     transition: opacity .2s;
-    padding-left:1em;
-    padding-right:1em;
+    padding-left: 1em;
+    padding-right: 1em;
     box-sizing: border-box;
     /* transform:translateY(5px); */
-    background:black;
+    background: black;
 }
 
 .WebPlaybackControlsProgressBar::-webkit-slider-thumb {
@@ -110,82 +113,99 @@
     cursor: pointer;
 }
 
-.WebPlaybackControlsSection{
-    width:100%;
+.WebPlaybackControlsSection {
+    width: auto;
     /* Ensure this isnt bigger than the parent container */
-    max-width:100%;
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
+    flex: 1;
+    width: 33%;
 }
 
-.FullScreenWebPlayer{
-    width:100%;
-    height:100vh;
-    position:fixed;
-    top:0;
-    left:0;
-    z-index:100;
-    background:black;
-    display:flex;
+.PlayingElsewhereMessage {
+    transition: background 0.5s ease-in-out;
+    cursor: pointer;
+    border-radius: 1em;
+    padding: .5em;
+    /* Text shadow */
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    font-weight: bold;
+}
+
+.PlayingElsewhereMessage:hover {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.FullScreenWebPlayer {
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background: black;
+    display: flex;
     justify-content: center;
     align-items: center;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    transition:background 0.5s ease-in-out, position 0.5s ease-in-out, transform 0.5s ease-in-out;
-    display:flex;
+    transition: background 0.5s ease-in-out, position 0.5s ease-in-out, transform 0.5s ease-in-out;
+    display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    transform:translateY(100%);
+    transform: translateY(100%);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    padding-top: env(safe-area-inset-top, 0);
 }
 
-.ShowFullScreenWebPlayer{
-    transform:translateY(0);
+.ShowFullScreenWebPlayer {
+    transform: translateY(0);
 }
 
-.FullScreenWebPlayerCloseButtonContainer{
-    position:absolute;
-    top:0;
-    left:0;
-    padding:1em;
-    cursor:pointer;
-    z-index:120;
-    height:8vh;
-    width:100%;
-    padding:1em;
-    display:flex;
+.FullScreenWebPlayerCloseButtonContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 1em;
+    cursor: pointer;
+    z-index: 120;
+    height: 8vh;
+    width: 100%;
+    padding: 1em;
+    display: flex;
     justify-content: center;
     align-items: center;
     transition: background 0.5s ease-in-out;
 }
 
-.FullScreenWebPlayerCloseButtonContainer:hover{
-    background:rgba(0,0,0,0.5);
+.FullScreenWebPlayerCloseButtonContainer:hover {
+    background: rgba(0, 0, 0, 0.5);
 }
 
-.FullScreenWebPlayerBGOverlay{
-    width:100vw;
-    height:100vh;
-    position:fixed;
-    top:0;
-    left:0;
-    z-index:101;
-    background:rgba(0,0,0,0.5);
+.FullScreenWebPlayerBGOverlay {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 101;
+    background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(15px);
 }
 
-.FullScreenWebPlayerBackgroundImageContainer{
-    width:100%;
-    height:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+.FullScreenWebPlayerBackgroundImageContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .FullScreenWebPlayerAlbumArt {
-    animation: RotateAlbumArt 20s linear infinite;
+    animation: RotateAlbumArt 60s linear infinite;
     animation-play-state: paused;
     /* Make it a circle */
     border-radius: 50%;
@@ -203,6 +223,7 @@
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
@@ -313,83 +334,96 @@
     cursor: pointer;
 }
 
-.SongInfo{
+.SongInfo {
     text-align: left;
-    display:flex;
+    display: flex;
     justify-content: flex-start;
     align-items: center;
     flex-direction: row;
-    padding-left:1em;
+    padding-left: 1em;
+    position: relative;
+    height: 100%;
 }
 
-.PlaybackTrackName{
-    font-size:1.1em;
-    font-weight:bold;
+.PlaybackTrackName {
+    font-size: 1.1em;
+    font-weight: bold;
     /* text shadow for readability */
     text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    /* Ensure new lines arent made and the line just continues on */
+    white-space: ellipsis;
+    display: inline-block;
+    /* Keeps it sized to content */
 }
 
-.PlaybackArtistName{
+.PlaybackArtistName {
     text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-.SongInfoAlbumArtContainer{
+.SongInfoAlbumArtContainer {
     height: 100%;
-    width: auto;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    position:relative;
-    width:100%;
-    z-index:12;
+    position: relative;
+    width: 100%;
+    z-index: 12;
 }
 
-.SongInfoAlbumArt{
+.SongInfoAlbumArt {
     object-fit: contain;
-    height:auto;
-    width:auto;
-    max-width:100%;
-    max-height:100%;
+    height: auto;
+    width: auto;
+    max-width: 100%;
+    max-height: 100%;
     /* Ensure this isnt larger than parent container */
-    width:100%;
-    height:100%;
-    transition:opacity 0.5s ease-in-out;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.5s ease-in-out;
     border-radius: 15px;
-    overflow:hidden;
+    overflow: hidden;
     overflow: hidden;
 }
 
-.SongInfoTrackDetails{
+.SongInfoTrackDetails {
+    text-align: left;
+    overflow: hidden;
+    max-width: 100%;
+    position: relative;
+}
+
+
+
+.SongInfoTrackDetails span {
     text-align: left;
 }
 
-.SongInfoTrackDetails span{
-    text-align: left;
-}
-
-.PlaybackControls{
+.PlaybackControls {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    height:100%;
-    position:absolute;
-    opacity:0;
+    height: 100%;
+    position: absolute;
+    opacity: 0;
     pointer-events: none;
-    transition:opacity 0.5s ease-in-out;
-    cursor:pointer;
-    padding-left:1em;
-    padding-right:1em;
+    transition: opacity 0.5s ease-in-out;
+    cursor: pointer;
+    padding-left: 1em;
+    padding-right: 1em;
 }
 
-.VolumeControls{
-    height:100%;
+.VolumeControls {
+    height: 100%;
+    max-width: 100%;
+    width: 100%;
 }
 
-.VolumeControls input{
+.VolumeControls input {
     /* This is a range element, change the colors so it fits our design language */
     -webkit-appearance: none;
+    appearance: none;
     width: 80%;
     height: 5px;
     border-radius: 5px;
@@ -398,8 +432,8 @@
     opacity: 0.7;
     -webkit-transition: .2s;
     transition: opacity .2s;
-    margin-right:1em;
-    margin-left:1em;
+    margin-right: 1em;
+    margin-left: 1em;
 }
 
 .VolumeControls input::-webkit-slider-thumb {
@@ -412,31 +446,32 @@
     cursor: pointer;
 }
 
-.ExpandIconContainer{
-    width:auto;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    cursor:pointer;
-    width:25%;
-    height:100%;
-    transition:background 0.5s ease-in-out;
+.ExpandIconContainer {
+    width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    width: 25%;
+    height: 100%;
+    transition: background 0.5s ease-in-out;
 }
 
-.ExpandIconContainer:hover{
-    background:rgba(0,0,0,0.5);
+.ExpandIconContainer:hover {
+    background: rgba(0, 0, 0, 0.5);
 }
 
 
-.SongInfoAlbumArtContainer:hover .SongInfoAlbumArt{
-    opacity:.5;
+.SongInfoAlbumArtContainer:hover .SongInfoAlbumArt {
+    opacity: .5;
 }
+
 .SongInfoAlbumArtContainer:hover .PlaybackControls {
     opacity: 1;
     pointer-events: auto;
 }
 
-.SpotifyCollectionBackgroundImage::after{
+.SpotifyCollectionBackgroundImage::after {
     /* Just slightly darken the background container */
     content: "";
     position: fixed;
@@ -444,8 +479,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index:-1;
+    /* background: rgba(0, 0, 0, 0.5); */
+    z-index: -1;
 }
 
 .SpotifyCollectionBackgroundImage img {
@@ -461,12 +496,15 @@
     background-repeat: no-repeat;
     /* Make it cover but not stretch */
     object-fit: cover;
-    display:none;
+    display: none;
 }
 
-.MusicPage>h2 {
+.MusicPage>h1 {
     text-align: left;
     padding-left: 1em;
+    font-size:5em;
+    /* text shadow */
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .SubscribedItemsProgressBar {
@@ -503,11 +541,12 @@
     border-radius: 1em;
     /* Drop shadow */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    width: 5vh;
-    height: 5vh;
+    width: 15em;
+    height: 15em;
     aspect-ratio: 1 / 1;
     max-width: 100%;
     max-height: 100%;
+    font-size: 1em;
 }
 
 
@@ -539,13 +578,18 @@
     overflow: hidden;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     aspect-ratio: 1/1;
+    /* Make the text the opposite of the background */
+    color: white;
+    /* Like invert the text to the opposite of the color of the background */
+
+
 }
 
-.PlaylistItemTilt{
-    width:700px;
-    height:200px;
+.PlaylistItemTilt {
+    width: 700px;
+    height: 200px;
     border-radius: 1em;
-    overflow:hidden;
+    overflow: hidden;
     /* Drop shadow */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     background-position: center;
@@ -553,38 +597,38 @@
     background-size: cover;
 }
 
-.PlaylistArt{
-    width:auto;
-    height:100%;
-    position:absolute;
-    left:0;
-    top:0;
+.PlaylistArt {
+    width: auto;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
     aspect-ratio: 1/1;
 }
 
-.PlaylistName{
-    height:100% !important;
+.PlaylistName {
+    height: 100% !important;
     font-size: 1.5em !important;
     font-weight: bold;
-    padding:1em;
+    padding: 1em;
     /* Text shadow */
     text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-.PlaylistOverlay{
-    position:absolute;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
-    background:rgba(0,0,0,0.5);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    backdrop-filter:blur(5px);
-    transition:opacity 0.5s ease-in-out;
-    color:white;
-    font-size:2em;
+.PlaylistOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    transition: opacity 0.5s ease-in-out;
+    color: white;
+    font-size: 2em;
 }
 
 .CollectionName {
@@ -619,8 +663,10 @@
 
 /* Eveery other element slightly different background */
 
-.CollectionHeader{
-    width:20vw;
+.CollectionHeader {
+    width: 20vw;
+    min-width: 400px;
+    padding: 1em;
 }
 
 .CollectionHeaderName {
@@ -628,22 +674,25 @@
     margin-bottom: 1em;
     /* Text shadow to increase legibility */
     text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    z-index:5;
-    position:relative;
+    z-index: 5;
+    position: relative;
 }
 
 .CollectionPage {
     width: 100%;
     width: 100vw;
-    padding-bottom: 10vh;
-    padding-top:4vh;
-    margin-top:4vh;
+    padding: 1em;
+    padding-bottom: 14vh;
+    padding-top: 4vh;
+    margin-top: 4vh;
+    min-height:100vh;
+    height:auto;
 }
 
 .CollectionContainer {
     display: flex;
     justify-content: space-between;
-    position:relative;
+    position: relative;
 }
 
 .CollectionExplorerHeader {
@@ -658,21 +707,21 @@
     margin-bottom: auto;
     padding: 5em;
     padding-bottom: 2em;
-    width:100vw;
+    width: 100vw;
     box-sizing: border-box;
-    width:auto;
+    width: auto;
 }
 
 .CollectionArt {
     border-radius: 1em;
     margin-bottom: 1em;
     max-width: 100%;
-    max-height:100%;
+    max-height: 100%;
     object-fit: contain;
     /* Ensure the image retains its aspect ratio */
     /* Drop shadow */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    width:100%;
+    width: 100%;
 }
 
 .CollectionHeaderInfo {
@@ -684,23 +733,23 @@
     text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
-.CollectionHeaderButtons{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    margin-top:1em;
+.CollectionHeaderButtons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1em;
 }
 
-.CollectionHeaderButtons button{
-    margin:1em;
-    padding:1em;
-    border-radius:15px;
-    background:rgba(0,0,0,0.5);
-    backdrop-filter:blur(5px);
-    color:white;
-    border:none;
-    cursor:pointer;
-    transition:background 0.5s ease-in-out;
+.CollectionHeaderButtons button {
+    margin: 1em;
+    padding: 1em;
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.5s ease-in-out;
     aspect-ratio: 2/1;
 }
 
@@ -713,11 +762,14 @@
     width: 100%;
 }
 
-.CollectionExplorerBody h2{
-    font-size:3em;
-    text-align:left;
-    padding-left:1em;
-    padding-top:1em;
+.CollectionExplorerBody h2 {
+    font-size: 3em;
+    text-align: left;
+    padding-left: 1em;
+    padding-top: 1em;
+    /* Set the text to the opposite color of the background */
+    /* Text shadow for legibility */
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 
@@ -767,8 +819,8 @@
     transition: transform 0.2s ease-in-out;
 }
 
-.TrackArt:hover{
-    transform:scale(1.1);
+.TrackArt:hover {
+    transform: scale(1.1);
 }
 
 .TrackName {
@@ -783,18 +835,19 @@
     margin: auto;
     min-width: 20%;
     flex: 1;
-    height:100%;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     transition: background 0.5s ease-in-out;
 }
-.TrackArtist:hover{
-    background:rgba(0, 0, 0, 0.5);
+
+.TrackArtist:hover {
+    background: rgba(0, 0, 0, 0.5);
 }
 
-.TrackArtist a{
-    color:white;
+.TrackArtist a {
+    color: white;
 }
 
 .TrackDownloadButton {
@@ -803,15 +856,15 @@
     padding: 1em;
     color: black !important;
     flex: .5;
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
-    max-width:100px;
+    max-width: 100px;
     transition: background 0.5s ease-in-out;
 }
 
-.TrackDownloadButton:hover{
-    background:rgba(0,0,0,0.5);
+.TrackDownloadButton:hover {
+    background: rgba(0, 0, 0, 0.5);
 }
 
 
@@ -889,8 +942,8 @@
     background-repeat: no-repeat;
     /* Make it cover but not stretch */
     object-fit: cover;
-    display:none;
-    background:none;
+    display: none;
+    background: none;
 }
 
 .ArtistExplorerHeader {
@@ -945,32 +998,55 @@
 /* Portrait media query */
 @media screen and (orientation: portrait) {
     .MusicPage {
-        padding-top:4vh;
+        padding-top: 4vh;
         padding-bottom: 13vh;
-        margin-top:4vh;
-        width:100vw !important;
+        margin-top: 4vh;
+        height:auto;
+        min-height:100vh;
+        width: 100vw !important;
         box-sizing: border-box;
     }
 
-    .CollectionHeader{
-        width:100%;
+    .CollectionPage {
+        padding: 0;
+        padding-bottom: 14vh;
+        padding-top: 4vh;
+        margin-top: 4vh;
+        width: 100vw;
+        min-height:100vh;
+        height:auto;
+        box-sizing: border-box;
     }
 
-    .CollectionPage{
-        padding-bottom:13vh;
-        padding-top:4vh;
-        margin-top:4vh;
-        width:auto;
+    .CollectionHeader {
+        width: 100%;
+        margin: 0;
         box-sizing: border-box;
+        padding: 1em;
+    }
+
+    .CollectionArt {
+        border-radius: 15px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        margin: 0;
+        width: 100%;
+        height: auto;
+        max-width: 500px;
+        /* Replace with your image's original width */
+        max-height: 300px;
+        /* Replace with your image's original height */
+        object-fit : cover;
     }
 
     .SpotifyCollectionItemTilt {
         width: 100%;
         height: 100%;
+        width: 10em;
+        height: 10em;
         max-height: 100%;
         max-width: 100%;
-        margin:auto;
-        margin-bottom: 5em;
+        margin: 1em;
     }
 
     .SpotifyCollectionItem {
@@ -983,12 +1059,10 @@
         transform: translateY(0);
     }
 
-    .CollectionArt {
-        max-width: 95vw;
-    }
 
-    .CollectionContainer{
-        flex-direction:column;
+
+    .CollectionContainer {
+        flex-direction: column;
     }
 
     .CollectionExplorerHeader {

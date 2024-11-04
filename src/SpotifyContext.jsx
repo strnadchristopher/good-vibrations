@@ -25,6 +25,10 @@ export const SpotifyProvider = ({ children }) => {
     const [bgImageSrc, setBgImageSrc] = useState('');
     const [currentlyPlayingBgImage, setCurrentlyPlayingBgImage] = useState('');
     const [showFullScreenPlayer, setShowFullScreenPlayer] = useState(false);
+    const [checkPlaybackStatusInterval, setCheckPlaybackStatusInterval] = useState(null);
+    const [playingHere, setPlayingHere] = useState(false);
+    const [currentDevice, setCurrentDevice] = useState(null);
+    const [playerID, setPlayerID] = useState(null);
 
     useEffect(() => {
         if (!spotifyAccessToken && location.pathname !== '/spotify' && location.pathname !== '/login') {
@@ -44,7 +48,6 @@ export const SpotifyProvider = ({ children }) => {
             spotifyScriptLoaded = true;
         }
 
-
         window.onSpotifyWebPlaybackSDKReady = () => {
             let randomString = "";
             const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -60,8 +63,13 @@ export const SpotifyProvider = ({ children }) => {
 
             playerRef.current = player;
 
+
             player.addListener('ready', ({ device_id }) => {
                 console.log('Ready with Device ID', device_id);
+                setCheckPlaybackStatusInterval(setInterval(() =>{
+                    apiCallWithTokenRefresh((token) => checkPlaybackStatusWebApi(token));
+                }, 5000));
+                setPlayerID(device_id);
                 setPlayerConnected(true);
             });
 
@@ -78,6 +86,13 @@ export const SpotifyProvider = ({ children }) => {
                     setTrackProgress(state.position);
                     setTrackDuration(state.duration);
                     setCurrentlyPlayingBgImage(state.track_window.current_track.album.images[0].url);
+                    clearInterval(checkPlaybackStatusInterval);
+                    setPlayingHere(true);
+                } else {
+                    setPlayingHere(false);
+                    setCheckPlaybackStatusInterval(setInterval(() => {
+                        apiCallWithTokenRefresh(checkPlaybackStatusWebApi);
+                    }, 5000));
                 }
             });
 
@@ -90,6 +105,7 @@ export const SpotifyProvider = ({ children }) => {
             if (playerRef.current) {
                 playerRef.current.disconnect();
             }
+            clearInterval(checkPlaybackStatusInterval);
         });
 
         return () => {
@@ -99,8 +115,56 @@ export const SpotifyProvider = ({ children }) => {
                 playerRef.current.removeListener('player_state_changed');
                 playerRef.current.disconnect();
             }
+            clearInterval(checkPlaybackStatusInterval);
         };
     }, [spotifyAccessToken]);
+
+    // In the event that the player is not being used to playback music, we will check the spotify web api periodically to see if the user is playing music
+    const checkPlaybackStatusWebApi = async (token) => {
+        console.log("Checking playback status with web api", token);
+        const response = await fetch('https://api.spotify.com/v1/me/player', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            },
+        });
+
+        if(response.ok){
+            const data = await response.json();
+            if(data.is_playing && !playingHere){
+                console.log("Update from Web API: User is playing music but not here");
+                setCurrentTrack(data.item);
+                setPaused(false);
+                // setTrackProgress(data.progress_ms / 1000);
+                // setTrackDuration(data.item.duration_ms / 1000);
+                setCurrentlyPlayingBgImage(data.item.album.images[0].url);
+                setCurrentDevice(data.device);
+            }
+        }
+    }
+
+    const transferPlayback = async (token, device_id) => {
+        const response = await fetch('https://api.spotify.com/v1/me/player', {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                device_ids: [device_id],
+            }),
+        });
+
+        if (response.ok) {
+            console.log('Transferred playback to device', device_id);
+            return true;
+        }
+        else {
+            const error = new Error('Failed to transfer playback');
+            error.status = response.status;
+            throw error;
+        }
+    }
 
     const setBackgroundImage = (url) => {
         if (backgroundImageRef.current) {
@@ -416,6 +480,9 @@ export const SpotifyProvider = ({ children }) => {
             backgroundImage: backgroundImageRef.current,
             bgImageSrc,
             currentlyPlayingBgImage,
+            playingHere,
+            currentDevice,
+            playerID,
             setPaused,
             setTrackProgress,
             setTrackDuration,
@@ -437,6 +504,7 @@ export const SpotifyProvider = ({ children }) => {
             playSong,
             showFullScreenPlayer,
             setShowFullScreenPlayer,
+            transferPlayback
         }}>
             {children}
         </SpotifyContext.Provider>

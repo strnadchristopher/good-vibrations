@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { SpotifyProvider } from './SpotifyContext';
 import { SpotifyHome, SpotifyPlaylistBrowser, PlaylistExplorer, SpotifyAlbumsBrowser, AlbumExplorer, SubscribedArtistsBrowser, ArtistExplorer, MusicSearch } from './music/Music';
 import { useSpotify } from './SpotifyContext';
-
+import { AnimatePresence } from 'framer-motion';
 
 const client_id = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
 const client_secret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
@@ -133,6 +133,7 @@ function LandingPage() {
 
 function WebPlayback() {
   const {
+    apiCallWithTokenRefresh,
     player,
     currentTrack,
     paused,
@@ -143,7 +144,11 @@ function WebPlayback() {
     setTrackProgress,
     setCurrentVolume,
     randomPlayerName,
-    setShowFullScreenPlayer
+    setShowFullScreenPlayer,
+    playingHere,
+    currentDevice,
+    transferPlayback,
+    playerID
   } = useSpotify();
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -161,51 +166,63 @@ function WebPlayback() {
         <img className="WebPlaybackControlsBackgroundImage" src={currentTrack ? currentTrack.album.images[0].url : ''} alt="Album Art" />
         <div className="WebPlaybackControlsBackgroundImageOverlay"></div>
       </div>}
-      {currentTrack && <input className="WebPlaybackControlsProgressBar" type="range" min="0" max={trackDuration} value={trackProgress}
+      {currentTrack && playingHere && <input className="WebPlaybackControlsProgressBar" type="range" min="0" max={trackDuration} value={trackProgress}
         onChange={(e) => {
           player.seek(e.target.value);
         }}
       />}
       <div className="SongInfo WebPlaybackControlsSection">
         <div className="SongInfoTrackDetails">
-          <span className="PlaybackTrackName">{currentTrack ? currentTrack.name : 'No Track Playing, Device Name is ' + randomPlayerName}</span>
+          <span className="PlaybackTrackName">{currentTrack ? currentTrack.name : 'No Track Playing, Start Playing  ' + randomPlayerName}</span>
           <br />
           <span className="PlaybackArtistName">{currentTrack ? currentTrack.artists[0].name : ''}</span>
         </div>
       </div>
-      {currentTrack && <div className="SongInfoAlbumArtContainer">
-        <img className="SongInfoAlbumArt" src={currentTrack ? currentTrack.album.images[0].url : ''} alt="Album Art" />
-        <div className="PlaybackControls">
-          <FontAwesomeIcon className="PlaybackControlButton" icon={faBackward}
-            onClick={() => {
-              player.previousTrack();
-            }}
-          />
-          <FontAwesomeIcon className="PlaybackControlButton" icon={paused ? faPlay : faPause} onClick={() => {
-            player.togglePlay();
-          }} />
-          <FontAwesomeIcon className="PlaybackControlButton" icon={faForward}
-            onClick={() => {
-              player.nextTrack();
-            }}
-          />
-        </div>
-      </div>}
+      {currentTrack &&
+        <div className="SongInfoAlbumArtContainer WebPlaybackControlsSection">
+          <img className="SongInfoAlbumArt" src={currentTrack ? currentTrack.album.images[0].url : ''} alt="Album Art" />
+          {playingHere && <div className="PlaybackControls">
+            <FontAwesomeIcon className="PlaybackControlButton" icon={faBackward}
+              onClick={() => {
+                player.previousTrack();
+              }}
+            />
+            <FontAwesomeIcon className="PlaybackControlButton" icon={paused ? faPlay : faPause} onClick={() => {
+              player.togglePlay();
+            }} />
+            <FontAwesomeIcon className="PlaybackControlButton" icon={faForward}
+              onClick={() => {
+                player.nextTrack();
+              }}
+            />
+          </div>}
+        </div>}
       {currentTrack && <div className="VolumeControls WebPlaybackControlsSection">
-        <input type="range" min="0" max="100" value={currentVolume}
+        {playingHere && <input type="range" min="0" max="100" value={currentVolume}
           onChange={(e) => {
             let newVolume = e.target.value / 100;
             player.setVolume(newVolume);
             setCurrentVolume(e.target.value);
           }}
-        />
-        <div
+        />}
+        {playingHere && <div
           onClick={() => {
             setShowFullScreenPlayer(true);
           }}
           className="ExpandIconContainer">
           <FontAwesomeIcon className="ExpandIcon" icon={faCaretUp} />
-        </div>
+        </div>}
+        {
+          currentTrack && !playingHere && currentDevice &&
+          <div className="PlayingElsewhereMessage"
+            onClick={() => {
+              apiCallWithTokenRefresh((token) => transferPlayback(token, playerID));
+            }}
+
+          >
+            Playing on <u>{currentDevice.name}</u>.<br />Click to transfer playback here.
+          </div>
+        }
       </div>}
     </div>
   );
@@ -231,9 +248,9 @@ function FullScreenPlayer() {
       <div className="FullScreenWebPlayerBGOverlay">
       </div>
       <div className="FullScreenWebPlayerCloseButtonContainer"
-      onClick={() => {
-        setShowFullScreenPlayer(false);
-      }}
+        onClick={() => {
+          setShowFullScreenPlayer(false);
+        }}
       >
         <FontAwesomeIcon className="FullScreenWebPlayerCloseButton" icon={faCaretDown}
         />
@@ -394,23 +411,23 @@ function SearchBar(props) {
 
 function AnimatedRoutes({
   set_search_box_text,
-  spotify_access_token,
-  handle_spotify_error
 }) {
   return (
-    <Routes location={location} key={location.pathname}>
-      <Route path="/" element={<RootRedirector />} />
-      <Route path="/home" element={<SpotifyHome />} />
-      <Route path="/playlists" element={<SpotifyPlaylistBrowser spotify_access_token={spotify_access_token} handle_spotify_error={handle_spotify_error} />} />
-      <Route path="/playlist/:playlist_id" element={<PlaylistExplorer spotify_access_token={spotify_access_token} handle_spotify_error={handle_spotify_error} />} />
-      <Route path="/albums" element={<SpotifyAlbumsBrowser spotify_access_token={spotify_access_token} handle_spotify_error={handle_spotify_error} />} />
-      <Route path="/album/:album_id" element={<AlbumExplorer spotify_access_token={spotify_access_token} handle_spotify_error={handle_spotify_error} />} />
-      <Route path="/artists" element={<SubscribedArtistsBrowser spotify_access_token={spotify_access_token} handle_spotify_error={handle_spotify_error} />} />
-      <Route path="/artist/:artist_id" element={<ArtistExplorer spotify_access_token={spotify_access_token} handle_spotify_error={handle_spotify_error} />} />
-      <Route path="/search/:search_query/:page" element={<MusicSearch spotify_access_token={spotify_access_token} handle_spotify_error={handle_spotify_error} />} />
-      <Route path="/spotify" element={<SpotifyCallbackHandler set_spotify_access_token={set_search_box_text} />} />
-      <Route path="/login" element={<LandingPage />} />
-    </Routes>
+    <AnimatePresence mode='wait'>
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<RootRedirector />}/>
+        <Route path="/home" element={<SpotifyHome />}/>
+        <Route path="/playlists" element={<SpotifyPlaylistBrowser/>}/>
+        <Route path="/playlist/:playlist_id" element={<PlaylistExplorer/>}/>
+        <Route path="/albums" element={<SpotifyAlbumsBrowser/>}/>
+        <Route path="/album/:album_id" element={<AlbumExplorer/>}/>
+        <Route path="/artists" element={<SubscribedArtistsBrowser/>}/>
+        <Route path="/artist/:artist_id" element={<ArtistExplorer/>}/>
+        <Route path="/search/:search_query/:page" element={<MusicSearch/>}/>
+        <Route path="/spotify" element={<SpotifyCallbackHandler set_spotify_access_token={set_search_box_text}/>}/>
+        <Route path="/login" element={<LandingPage />} />
+      </Routes>
+    </AnimatePresence>
   )
 }
 

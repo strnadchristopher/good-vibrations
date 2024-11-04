@@ -15,8 +15,24 @@ export function SpotifyHome() {
     const [user, setUser] = useState(null);
     const [tracks, setTracks] = useState([]);
     const backgroundImageRef = useRef(null);
+    useEffect(() => {
+        if (user && user.images && user.images[0]) {
+            const img = new Image();
+            img.src = user.images[0].url;
+            img.onload = () => {
+                const width = img.width;
+                const height = img.height;
+                const collectionArt = document.querySelector('.CollectionArt');
+                if (collectionArt) {
+                    collectionArt.style.width = `${width}px`;
+                    collectionArt.style.height = `${height}px`;
+                }
+            };
+        }
+    }, [user]);
 
     useEffect(() => {
+        if (artists && user && tracks) return;
         // Fill the above state with the user's top playlists, albums, and artists and profile, we can call getUserTopItems(type) and getUserProfile()
         apiCallWithTokenRefresh((token) => getUserProfile(token))
             .then(data => {
@@ -49,7 +65,14 @@ export function SpotifyHome() {
                 console.error("Error fetching top artists: ", error);
             });
 
-    }, [])
+    }, [
+        apiCallWithTokenRefresh,
+        getUserProfile,
+        getUserTopItems,
+        artists,
+        user,
+        tracks,
+    ])
 
     return (
         <div className="CollectionPage">
@@ -66,14 +89,14 @@ export function SpotifyHome() {
                 }
                 <div className="CollectionExplorerBody">
                     {/* Top Tracks */}
-                    <h2>Top Tracks</h2>
+                    {tracks && <h2>Top Tracks</h2>}
                     {tracks && <div className="TrackList">
                         {tracks.map((track, idx) => {
                             return <TrackItem key={idx} track={track} />
                         })}
                     </div>}
 
-                    <h2>Top Artists</h2>
+                    {artists && <h2>Top Artists</h2>}
                     {artists && <div className="SpotifyCollection">
                         {artists.map((artist, idx) => {
                             return <ArtistItem key={idx} artist={artist} />
@@ -105,7 +128,10 @@ export function SpotifyPlaylistBrowser() {
                 console.error("Error fetching playlists: ", error);
             });
 
-    }, [])
+    }, [
+        apiCallWithTokenRefresh,
+        getUserPlaylists
+    ])
 
     return (
         <div className="MusicPage"
@@ -114,7 +140,7 @@ export function SpotifyPlaylistBrowser() {
             <div className="SpotifyCollectionBackgroundImage">
                 {playlists.length > 0 && <img src={backgroundImageRef.current} alt="Playlist Background" />}
             </div>
-
+            <h1>Your Playlists</h1>
             {playlists != null &&
                 playlists.map((playlist, idx) => {
                     return <PlaylistItem key={idx} playlist={playlist} />
@@ -143,7 +169,11 @@ export function PlaylistExplorer() {
             });
 
 
-    }, [])
+    }, [
+        apiCallWithTokenRefresh,
+        getPlaylist,
+        playlist_id
+    ])
 
     const playPlaylist = () => {
         if (playlist == null) return;
@@ -235,6 +265,7 @@ export function SpotifyAlbumsBrowser() {
             <div className="SpotifyCollectionBackgroundImage">
                 {albums.length > 0 && <img src={backgroundImageRef.current} alt="Album Background" />}
             </div>
+            <h1>Your Albums</h1>
             {albums != null &&
                 albums.map((album, idx) => {
                     return <AlbumItem key={idx} album={album.album} />
@@ -257,7 +288,11 @@ export function AlbumExplorer() {
             .catch((error) => {
                 console.error("Error: ", error);
             });
-    }, [album_id])
+    }, [
+        apiCallWithTokenRefresh,
+        getAlbum,
+        album_id
+    ])
 
     const playAlbum = () => {
         if (album == null) return;
@@ -347,7 +382,10 @@ export function SubscribedArtistsBrowser() {
             .catch((error) => {
                 console.error("Error fetching followed artists: ", error);
             });
-    }, [])
+    }, [
+        apiCallWithTokenRefresh,
+        getUserFollowedArtists
+    ])
 
     return (
         <div className="MusicPage">
@@ -355,6 +393,7 @@ export function SubscribedArtistsBrowser() {
                 {artists.length > 0
                     && <img src={backgroundImageRef.current} alt="Artist Background" />}
             </div>
+            <h1>Your Artists</h1>
             {artists != null &&
 
                 artists.map((artist, idx) => {
@@ -417,7 +456,14 @@ export function ArtistExplorer() {
                 console.error("Error: ", error);
                 setSpotifyError(error);
             });
-    }, [artist_id])
+    }, [
+        apiCallWithTokenRefresh,
+        getArtist,
+        getArtistTopTracks,
+        getArtistAlbums,
+        getRelatedArtists,
+        artist_id
+    ])
 
 
 
@@ -511,7 +557,11 @@ export function MusicSearch() {
             .catch((error) => {
                 console.error("Error fetching search results: ", error);
             });
-    }, [search_query])
+    }, [
+        apiCallWithTokenRefresh,
+        searchSpotify,
+        search_query
+    ])
 
     return (
         <div className="SearchResults">
@@ -547,6 +597,15 @@ export function MusicSearch() {
 
 function PlaylistItem({ playlist }) {
     const navigate = useNavigate();
+    const [imageLoaded, setImageLoaded] = useState(false);
+
+    useEffect(() => {
+        const img = new Image();
+        img.src = playlist.images[0].url;
+        img.onload = () => {
+            setImageLoaded(true);
+        }
+    }, [playlist])
     return (
         <Tilt
             options={{
@@ -563,6 +622,8 @@ function PlaylistItem({ playlist }) {
             className="SpotifyCollectionItemTilt PlaylistItemTilt"
             style={{
                 backgroundImage: `url(${playlist.images[0].url})`,
+                opacity: imageLoaded ? 1 : 0,
+                transition: 'opacity 0.5s',
             }}
         >
             <div className="SpotifyCollectionItem"
@@ -583,31 +644,18 @@ function PlaylistItem({ playlist }) {
 
 }
 
-function ArtistItem({ artist, subscribed_artists_data, size = 300 }) {
+function ArtistItem({ artist }) {
     const navigate = useNavigate();
-    const [download_progress, setDownloadProgress] = useState(null);
-    const [animation_progress, setAnimationProgress] = useState(0);
-    useEffect(() => {
-        if (subscribed_artists_data == null || artist == null) return;
-        let dl_data = subscribed_artists_data[artist.id];
-        if (dl_data) {
-            setDownloadProgress(dl_data.download_progress * 100);
-        }
-    }, [artist, subscribed_artists_data]);
+    const [imageLoaded, setImageLoaded] = useState(false);
 
     useEffect(() => {
-        if (download_progress !== null) {
-            const timeout = setTimeout(() => {
-                setAnimationProgress(download_progress); // Animate from 0 to the actual progress
-            }, 250); // Delay to ensure the animation triggers after mount
-            return () => clearTimeout(timeout);
+        const img = new Image();
+        img.src = artist.images[0].url;
+        img.onload = () => {
+            setImageLoaded(true);
         }
-    }, [download_progress]);
+    }, [artist.images])
 
-    // Adjust circle radius and stroke width based on size
-    const strokeWidth = size * 0.04;  // Reduced stroke width to 2% of size
-    const circleRadius = (size / 2);  // Radius adjusted to ensure it fits inside the container
-    const circumference = 2 * Math.PI * circleRadius;  // Circumference for progress calculation
 
     return (
         <Tilt
@@ -623,54 +671,15 @@ function ArtistItem({ artist, subscribed_artists_data, size = 300 }) {
             }}
             className="SpotifyCollectionItemTilt"
             style={{
-                width: `${size}px`,          // Dynamically set the width
-                height: `${size}px`,         // Dynamically set the height
                 borderRadius: '1em',         // Ensure it's circular
                 overflow: 'hidden',
+                transition: 'opacity 0.5s',
+                opacity: imageLoaded ? 1 : 0,
             }}
         >
-            {download_progress !== null && (
-                <svg
-                    className="ProgressCircle"
-                    viewBox={`0 0 ${size + 20} ${size + 20}`} // Dynamically set the viewBox
-                    preserveAspectRatio="xMidYMid meet"
-                    style={{
-                        width: `${size + 20}px`,   // Set SVG width dynamically
-                        height: `${size + 20}px`,  // Set SVG height dynamically
-                        overflow: 'visible',       // Allow overflow for progress circle
-                    }}
-                >
-                    {/* Outer border circle */}
-                    <circle
-                        cx={size / 2}         // Center the circle based on size
-                        cy={size / 2}         // Center the circle based on size
-                        r={circleRadius}      // Adjust radius based on size
-                        fill="none"
-                        stroke="black"
-                        strokeWidth={strokeWidth}  // Use reduced stroke width
-                    />
-                    {/* Progress circle */}
-                    <circle
-                        cx={size / 2}         // Center the progress circle based on size
-                        cy={size / 2}         // Center the progress circle based on size
-                        r={circleRadius}      // Adjust radius for progress circle
-                        fill="none"
-                        stroke="white"
-                        strokeWidth={strokeWidth}  // Use same stroke width for progress
-                        strokeDasharray={circumference}  // Set stroke dash array based on circumference
-                        strokeDashoffset={circumference - (circumference * animation_progress / 100)}  // Calculate offset for progress
-                        strokeLinecap="round" // Round ends of the progress stroke
-                        style={{
-                            transition: 'stroke-dashoffset 1s ease-in-out'  // Smooth transition for the animation
-                        }}
-                    />
-                </svg>
-            )}
             <div
                 className="SpotifyCollectionItem Circle"
                 style={{
-                    width: '100%',            // Fill the parent element
-                    height: '100%',           // Fill the parent element
                     backgroundImage: artist.images?.length > 0 ? `url(${artist.images[0].url})` : `url(${musicIcon})`,
                     backgroundSize: artist.images?.length > 0 ? 'cover' : 'contain',
                 }}
@@ -685,37 +694,19 @@ function ArtistItem({ artist, subscribed_artists_data, size = 300 }) {
     );
 }
 
-function AlbumItem({ album, show_name = true, subscribed_artists_data = null, size = 400 }) {
+function AlbumItem({ album, show_name = true }) {
     const navigate = useNavigate();
-    const [download_progress, setDownloadProgress] = useState(null);
-    const [animationProgress, setAnimationProgress] = useState(0);
+    const [imageLoaded, setImageLoaded] = useState(false);
 
-    // Use the subscribed artists data to determine album download progress
     useEffect(() => {
-        if (subscribed_artists_data == null || album == null) return;
-        if (album.artists.length == 0) return;
-        if (!subscribed_artists_data[album.artists[0].id]) return;
-        let dl_data = subscribed_artists_data[album.artists[0].id].albums.items.find((item) => item.name == album.name);
-        if (dl_data) {
-            setDownloadProgress(dl_data.download_progress * 100);
+        const img = new Image();
+        img.src = album.images[0].url;
+        img.onload = () => {
+            setImageLoaded(true);
         }
-    }, [album, subscribed_artists_data]);
-
-    // Animation effect to trigger when the component mounts
-    useEffect(() => {
-        if (download_progress !== null) {
-            const timeout = setTimeout(() => {
-                setAnimationProgress(download_progress); // Animate from 0 to the actual progress
-            }, 100); // Delay to ensure the animation triggers after mount
-            return () => clearTimeout(timeout);
-        }
-    }, [download_progress]);
+    }, [album.images])
 
     // Adjust circle radius and stroke width based on size
-    const strokeWidth = size * 0.04;  // Reduced stroke width to 2% of size
-    const circleRadius = (size / 2);  // Radius adjusted to ensure it fits inside the container
-    const circumference = 2 * Math.PI * circleRadius;  // Circumference for progress calculation
-
     return (
         <Tilt
             options={{
@@ -730,54 +721,16 @@ function AlbumItem({ album, show_name = true, subscribed_artists_data = null, si
             }}
             className="SpotifyCollectionItemTilt"
             style={{
-                width: `${size}px`,          // Dynamically set the width
-                height: `${size}px`,         // Dynamically set the height
                 borderRadius: '1em',         // Ensure it's circular
                 backgroundImage: `url(${album.images[0].url})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
                 overflow: 'hidden',
+                transition: 'opacity 0.5s',
+                opacity: imageLoaded ? 1 : 0,
             }}
         >
-            {/* Progress circle, animating when progress exists */}
-            {download_progress !== null && (
-                <svg
-                    className="ProgressCircle"
-                    viewBox={`0 0 ${size + 20} ${size + 20}`} // Dynamically set the viewBox
-                    preserveAspectRatio="xMidYMid meet"
-                    style={{
-                        width: `${size + 20}px`,   // Set SVG width dynamically
-                        height: `${size + 20}px`,  // Set SVG height dynamically
-                        overflow: 'visible',       // Allow overflow for progress circle
-                    }}
-                >
-                    {/* Outer border circle */}
-                    <circle
-                        cx={size / 2}         // Center the circle based on size
-                        cy={size / 2}         // Center the circle based on size
-                        r={circleRadius}      // Adjust radius based on size
-                        fill="none"
-                        stroke="black"
-                        strokeWidth={strokeWidth}  // Use reduced stroke width
-                    />
-                    {/* Progress circle */}
-                    <circle
-                        cx={size / 2}         // Center the progress circle based on size
-                        cy={size / 2}         // Center the progress circle based on size
-                        r={circleRadius}      // Adjust radius for progress circle
-                        fill="none"
-                        stroke="white"
-                        strokeWidth={strokeWidth}  // Use same stroke width for progress
-                        strokeDasharray={circumference}  // Set stroke dash array based on circumference
-                        strokeDashoffset={circumference - (circumference * animationProgress / 100)}  // Animate offset for progress
-                        strokeLinecap="round" // Round ends of the progress stroke
-                        style={{
-                            transition: 'stroke-dashoffset 4s ease-in-out'  // Smooth transition for the animation
-                        }}
-                    />
-                </svg>
-            )}
             <div
                 className="SpotifyCollectionItem"
                 style={{
@@ -797,9 +750,10 @@ function AlbumItem({ album, show_name = true, subscribed_artists_data = null, si
     );
 }
 
-function TrackItem({ track, album, show_art = true, show_artist = true, subscribed_artists_data }) {
+function TrackItem({ track, album, show_art = true, show_artist = true }) {
     const { apiCallWithTokenRefresh, playSong } = useSpotify();
     const [albumData, setAlbumData] = useState(null);
+    const [imageLoaded, setImageLoaded] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -813,15 +767,13 @@ function TrackItem({ track, album, show_art = true, show_artist = true, subscrib
     }, [album, track])
 
     useEffect(() => {
-        // Check if the track is in the subscribed artists data
-        // To do this, we need to go through the subscribed_artist_data["artist_id"]["albums"]["items"] and find the item with the the album name with the same name as the track.album.name
-        // Then, we find the item in that object's "tracks" array with the same name as the track.name
-        // Then, we check if that item's state is "downloaded"
-        // If all this is true, then the item is downloaded, so go get em champ
-        console.log("This track thinks subscribed artists data is: ", subscribed_artists_data);
-        if (subscribed_artists_data == null) return;
         if (albumData == null) return;
-    }, [subscribed_artists_data, albumData])
+        const img = new Image();
+        img.src = albumData.images[0].url;
+        img.onload = () => {
+            setImageLoaded(true);
+        }
+    }, [albumData])
 
     const playTrack = () => {
         // Call the playSong function from the SpotifyContext, passing in the track uri within an array
@@ -836,7 +788,15 @@ function TrackItem({ track, album, show_art = true, show_artist = true, subscrib
     }
 
     return (
-        <div className="TrackItem">
+        <div className="TrackItem"
+        style={
+            {
+                opacity: imageLoaded ? 1 : 0,
+                transition: 'opacity 0.5s',
+            }
+        }
+        
+        >
             {show_art && albumData && <img className="TrackArt"
                 onClick={() => {
                     console.log("Navigating to: ", `/album/${albumData.id}`);
