@@ -173,7 +173,7 @@ function WebPlayback() {
       />}
       <div className="SongInfo WebPlaybackControlsSection">
         <div className="SongInfoTrackDetails">
-          <span className="PlaybackTrackName">{currentTrack ? currentTrack.name : 'No Track Playing, Start Playing  ' + randomPlayerName}</span>
+          <span className="PlaybackTrackName">{currentTrack ? currentTrack.name : 'No Track Playing. Start streaming on Spotify and select player ' + randomPlayerName + ' to control playback from here.'}</span>
           <br />
           <span className="PlaybackArtistName">{currentTrack ? currentTrack.artists[0].name : ''}</span>
         </div>

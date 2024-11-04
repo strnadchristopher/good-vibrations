@@ -600,8 +600,11 @@ function PlaylistItem({ playlist }) {
     const [imageLoaded, setImageLoaded] = useState(false);
 
     useEffect(() => {
+        if (!playlist) return;
+        if (!playlist.images) return;
+        if (playlist.images.length === 0) return;
         const img = new Image();
-        img.src = playlist.images[0].url;
+        img.src = playlist.images[0]?.url;
         img.onload = () => {
             setImageLoaded(true);
         }
@@ -649,6 +652,9 @@ function ArtistItem({ artist }) {
     const [imageLoaded, setImageLoaded] = useState(false);
 
     useEffect(() => {
+        if (!artist) return;
+        if (!artist.images) return;
+        if (artist.images.length === 0) return;
         const img = new Image();
         img.src = artist.images[0].url;
         img.onload = () => {
@@ -768,6 +774,8 @@ function TrackItem({ track, album, show_art = true, show_artist = true }) {
 
     useEffect(() => {
         if (albumData == null) return;
+        if (albumData.images == undefined) return
+        if (albumData.images.length === 0) return;
         const img = new Image();
         img.src = albumData.images[0].url;
         img.onload = () => {
