@@ -123,9 +123,12 @@ function LandingPage() {
   }, [location, navigate])
 
   return (
-    <div className="App">
-      <h1>Login To Spotify To Continue...</h1>
-      <a href={`https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${import.meta.env.VITE_CALLBACK_URL}&scope=user-read-private%20user-read-email%20user-follow-read%20user-library-read%20playlist-read-private%20playlist-read-collaborative%20user-top-read%20user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state%20user-read-playback-position%20user-read-recently-played%20user-library-modify%20playlist-modify-public%20playlist-modify-private%20user-follow-modify%20user-read-private%20user-read-email%20streaming`}>Login to Spotify</a>
+    <div className="LandingPage">
+      <h1>
+        Welcome to this Spotify Web Player
+      </h1>
+      <p>Link with Spotify To Continue</p>
+      <a href={`https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${import.meta.env.VITE_CALLBACK_URL}&scope=user-read-private%20user-read-email%20user-follow-read%20user-library-read%20playlist-read-private%20playlist-read-collaborative%20user-top-read%20user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state%20user-read-playback-position%20user-read-recently-played%20user-library-modify%20playlist-modify-public%20playlist-modify-private%20user-follow-modify%20user-read-private%20user-read-email%20streaming`}>Login to Continue</a>
     </div>
   )
 }
