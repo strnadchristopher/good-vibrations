@@ -9,6 +9,16 @@ import { SpotifyProvider } from './SpotifyContext';
 import { SpotifyHome, SpotifyPlaylistBrowser, PlaylistExplorer, SpotifyAlbumsBrowser, AlbumExplorer, SubscribedArtistsBrowser, ArtistExplorer, MusicSearch } from './music/Music';
 import { useSpotify } from './SpotifyContext';
 import { AnimatePresence } from 'framer-motion';
+import landingBG1 from '../landingPageBgs/1.jpg';
+import landingBG2 from '../landingPageBgs/2.jpg';
+import landingBG3 from '../landingPageBgs/3.jpg';
+import landingBG4 from '../landingPageBgs/4.jpg';
+import landingBG5 from '../landingPageBgs/5.jpg';
+import landingBG6 from '../landingPageBgs/6.jpg';
+import landingBG7 from '../landingPageBgs/7.jpg';
+import landingBG8 from '../landingPageBgs/8.jpg';
+import landingBG9 from '../landingPageBgs/9.jpg';
+
 
 const client_id = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
 const client_secret = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
@@ -70,7 +80,7 @@ function App() {
 
   return (
     <SpotifyProvider>
-      {location.pathname !== "/login" && <Navbar
+      {location.pathname !== "/login" && location.pathname !== "/spotify" && <Navbar
         location={location}
         navigate={navigate}
         show_search_bar={show_search_bar}
@@ -115,6 +125,16 @@ function BackgroundImage() {
 function LandingPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [chosenBG, setChosenBG] = useState(null);
+
+  useEffect(() => {
+    // Ensure we arent constantly changing the background image
+    const bgImages = [landingBG1, landingBG2, landingBG3, landingBG4, landingBG5, landingBG6, landingBG7, landingBG8, landingBG9];
+
+    const randomBG = bgImages[Math.floor(Math.random() * bgImages.length)];
+    setChosenBG(randomBG);
+  }, [])
+
   useEffect(() => {
     if (localStorage.getItem('spotify_access_token')) {
       console.log("Already logged in");
@@ -124,11 +144,11 @@ function LandingPage() {
 
   return (
     <div className="LandingPage">
+      <div className="LandingPageBG" style={{ backgroundImage: `url(${chosenBG})` }}></div>
       <h1>
-        Welcome to this Spotify Web Player
+        Christopher&apos;s Spotify Music Player
       </h1>
-      <p>Link with Spotify To Continue</p>
-      <a href={`https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${import.meta.env.VITE_CALLBACK_URL}&scope=user-read-private%20user-read-email%20user-follow-read%20user-library-read%20playlist-read-private%20playlist-read-collaborative%20user-top-read%20user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state%20user-read-playback-position%20user-read-recently-played%20user-library-modify%20playlist-modify-public%20playlist-modify-private%20user-follow-modify%20user-read-private%20user-read-email%20streaming`}>Login to Continue</a>
+      <a className="LoginButton" href={`https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${import.meta.env.VITE_CALLBACK_URL}&scope=user-read-private%20user-read-email%20user-follow-read%20user-library-read%20playlist-read-private%20playlist-read-collaborative%20user-top-read%20user-read-playback-state%20user-read-currently-playing%20user-modify-playback-state%20user-read-playback-position%20user-read-recently-played%20user-library-modify%20playlist-modify-public%20playlist-modify-private%20user-follow-modify%20user-read-private%20user-read-email%20streaming`}>Login with Spotify To Continue</a>
     </div>
   )
 }
@@ -418,16 +438,16 @@ function AnimatedRoutes({
   return (
     <AnimatePresence mode='wait'>
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<RootRedirector />}/>
-        <Route path="/home" element={<SpotifyHome />}/>
-        <Route path="/playlists" element={<SpotifyPlaylistBrowser/>}/>
-        <Route path="/playlist/:playlist_id" element={<PlaylistExplorer/>}/>
-        <Route path="/albums" element={<SpotifyAlbumsBrowser/>}/>
-        <Route path="/album/:album_id" element={<AlbumExplorer/>}/>
-        <Route path="/artists" element={<SubscribedArtistsBrowser/>}/>
-        <Route path="/artist/:artist_id" element={<ArtistExplorer/>}/>
-        <Route path="/search/:search_query/:page" element={<MusicSearch/>}/>
-        <Route path="/spotify" element={<SpotifyCallbackHandler set_spotify_access_token={set_search_box_text}/>}/>
+        <Route path="/" element={<RootRedirector />} />
+        <Route path="/home" element={<SpotifyHome />} />
+        <Route path="/playlists" element={<SpotifyPlaylistBrowser />} />
+        <Route path="/playlist/:playlist_id" element={<PlaylistExplorer />} />
+        <Route path="/albums" element={<SpotifyAlbumsBrowser />} />
+        <Route path="/album/:album_id" element={<AlbumExplorer />} />
+        <Route path="/artists" element={<SubscribedArtistsBrowser />} />
+        <Route path="/artist/:artist_id" element={<ArtistExplorer />} />
+        <Route path="/search/:search_query/:page" element={<MusicSearch />} />
+        <Route path="/spotify" element={<SpotifyCallbackHandler set_spotify_access_token={set_search_box_text} />} />
         <Route path="/login" element={<LandingPage />} />
       </Routes>
     </AnimatePresence>
@@ -442,7 +462,6 @@ function SpotifyCallbackHandler({ set_spotify_access_token }) {
   // We will then store the access token in local storage
   // We will then redirect to the music page
   const location = useLocation();
-  const navigate = useNavigate();
   const [spotifyAuthSuccess, set_spotifyAuthSuccess] = useState(false)
   useEffect(() => {
     // Get the access token from the code query parameter
@@ -459,28 +478,39 @@ function SpotifyCallbackHandler({ set_spotify_access_token }) {
     }).then(res => res.json())
       .then(data => {
         console.log('Spotify Auth Response:', data)
-        // This returns access_token, token_type, scropes, expires_in, refresh_token
-        // Let's save the access token and refresh token in local storage
-        if (data.error || data.access_token == undefined || data.refresh_token == undefined) {
-          console.log("Spotify Auth Failed")
-          localStorage.removeItem('spotify_access_token')
-          localStorage.removeItem('spotify_refresh_token')
-          set_spotifyAuthSuccess(false);
-          navigate('/artists')
-          return
-        }
+        // // This returns access_token, token_type, scropes, expires_in, refresh_token
+        // // Let's save the access token and refresh token in local storage
+        // if (data.error || data.access_token == undefined || data.refresh_token == undefined) {
+        //   console.log("Spotify Auth Failed")
+        //   localStorage.removeItem('spotify_access_token')
+        //   localStorage.removeItem('spotify_refresh_token')
+        //   set_spotifyAuthSuccess(false);
+        //   navigate('/artists')
+        //   return
+        // }
         localStorage.setItem('spotify_access_token', data.access_token)
         localStorage.setItem('spotify_refresh_token', data.refresh_token)
         set_spotify_access_token(data.access_token)
         set_spotifyAuthSuccess(true);
-        // Navigate to /music
-        navigate('/artists')
+        // Wait for 5 seconds before redirecting to /music
+        setTimeout(() => {
+          window.location.href = '/home'
+        }, 5000)
       })
-  }, [location.search, navigate, set_spotify_access_token])
-  return <div>
+  }, [])
+  return <div
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: '100vw',
+      height: '100vh',
+    }
+    }
+  >
 
     {
-      spotifyAuthSuccess ? <p>Spotify Auth Success</p> : <p>Spotify Auth Failed</p>
+      spotifyAuthSuccess ? <h2>Spotify Authorized Successfully. You will be redirected in 5 seconds. Welcome</h2> : <h2>Spotify Auth Failed. Please Try Again.</h2>
     }
 
   </div>
@@ -489,8 +519,7 @@ function SpotifyCallbackHandler({ set_spotify_access_token }) {
 function RootRedirector() {
   const navigate = useNavigate();
   useEffect(() => {
-    // If media_type is tv or movie, we should redirect to the popular page of that media type
-    navigate("/artists")
+    navigate("/home")
   })
   return <div></div>
 }

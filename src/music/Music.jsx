@@ -82,8 +82,18 @@ export function SpotifyHome() {
                     <div className="CollectionHeader">
                         <img className="CollectionArt" src={user.images[0].url} alt="User Art" />
                         <div className="CollectionHeaderInfo">
-                            <p>{user.display_name}</p>
-                            <p>{user.followers.total} Followers</p>
+                            <br/>
+                            <p>Logged in as <u>{user.display_name}</u></p>
+                            <br/>
+                            <span
+                            className="LogoutButton"
+                                onClick={() => {
+                                    // Delete the cookies for the spotify access token and refresh token and refresh the page
+                                    localStorage.removeItem('spotify_access_token');
+                                    localStorage.removeItem('spotify_refresh_token');
+                                    window.location.reload();
+                                }}
+                            >Disconnect From Spotify</span>
                         </div>
                     </div>
                 }
@@ -797,13 +807,13 @@ function TrackItem({ track, album, show_art = true, show_artist = true }) {
 
     return (
         <div className="TrackItem"
-        style={
-            {
-                opacity: imageLoaded ? 1 : 0,
-                transition: 'opacity 0.5s',
+            style={
+                {
+                    opacity: imageLoaded ? 1 : 0,
+                    transition: 'opacity 0.5s',
+                }
             }
-        }
-        
+
         >
             {show_art && albumData && <img className="TrackArt"
                 onClick={() => {
