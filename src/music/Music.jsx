@@ -484,7 +484,7 @@ export function ArtistExplorer() {
             {
                 spotifyError != null && <div className="SpotifyError">
                     <h1>Spotify Error</h1>
-                    <p>{spotifyError}</p>
+                    <p>{spotifyError.message}</p>
                 </div>
             }
             {artist != null && <>
