@@ -5,7 +5,7 @@ It showcases how to integrate the [Spotify Web API](https://developer.spotify.co
 and the [Spotify Web Playback SDK](https://developer.spotify.com/documentation/web-playback-sdk) to browse your
 music collection and control playback directly in the browser.
 
-![screenshot](screenshots/ss1.png)
+![screenshot](screenshots/spotify2.png)
 
 ## Features
 
