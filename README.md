@@ -76,10 +76,18 @@ you can transfer playback to the web player by clicking the banner that appears.
 
 A few captures showing various screens are available in the [`screenshots/`](screenshots) directory:
 
-![Home](screenshots/ss2.png)
-![Playlists](screenshots/ss5.png)
-![Full screen](screenshots/ss8.png)
-
+### Home
+![Home](screenshots/spotify1.png)
+### Artists
+![Artists](screenshots/spotify2.png)
+### Artist Page
+![Artist Page](screenshots/spotify12.png)
+### Album Page
+![Album](screenshots/spotify5.png)
+### Search
+![Search](screenshots/spotify6.png)
+### Now Playing
+![Now Playing](screenshots/spotify8.png)
 ## License
 
 This project is provided for educational purposes. You are free to fork and adapt it for your own use.
