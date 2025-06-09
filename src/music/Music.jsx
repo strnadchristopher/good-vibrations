@@ -82,11 +82,11 @@ export function SpotifyHome() {
                     <div className="CollectionHeader">
                         <img className="CollectionArt" src={user.images[0].url} alt="User Art" />
                         <div className="CollectionHeaderInfo">
-                            <br/>
+                            <br />
                             <p>Logged in as <u>{user.display_name}</u></p>
-                            <br/>
+                            <br />
                             <span
-                            className="LogoutButton"
+                                className="LogoutButton"
                                 onClick={() => {
                                     // Delete the cookies for the spotify access token and refresh token and refresh the page
                                     localStorage.removeItem('spotify_access_token');
@@ -482,7 +482,7 @@ export function ArtistExplorer() {
     return (
         <div className="CollectionPage">
             {
-                spotifyError != null && <div className="SpotifyError">
+                false && spotifyError != null && <div className="SpotifyError">
                     <h1>Spotify Error</h1>
                     <p>{spotifyError.message}</p>
                 </div>
