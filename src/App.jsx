@@ -39,7 +39,6 @@ function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const [search_box_text, set_search_box_text] = useState('');
-  // eslint-disable-next-line no-unused-vars
   const [show_search_bar, set_show_search_bar] = useState(false);
 
 
@@ -454,8 +453,6 @@ function AnimatedRoutes({
   )
 }
 
-// Ignore unused
-// eslint-disable-next-line no-unused-vars
 function SpotifyCallbackHandler({ set_spotify_access_token }) {
   // This component will be used to handle the callback from the spotify api
   // We will use the code query parameter to get the access token
